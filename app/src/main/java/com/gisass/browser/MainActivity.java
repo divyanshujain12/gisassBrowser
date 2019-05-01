@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
     private static final String VIEW_TYPE_EXTRA = MainActivity.class.getName() + "::ViewType";
 
     private static final String ADAPTER_STATE_EXTRA = State.class.getName() + "::%s::AdapterState";
-    private static final int TAB_COUNT = 12;
+    private static final int TAB_COUNT = 1;
     private TabSwitcher tabSwitcher;
     private Decorator decorator;
     private Snackbar snackbar;
