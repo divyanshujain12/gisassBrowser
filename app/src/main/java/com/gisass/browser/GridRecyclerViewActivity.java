@@ -18,12 +18,11 @@ public class GridRecyclerViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_grid_recycler_view);
 
 
         activityGridRecyclerViewBinding = DataBindingUtil.setContentView(this, R.layout.activity_grid_recycler_view);
         staticIconViewModel = ViewModelProviders.of(this).get(StaticIconViewModel.class);
-
+        staticIconViewModel.init();
         activityGridRecyclerViewBinding.setViewModel(staticIconViewModel);
 
     }

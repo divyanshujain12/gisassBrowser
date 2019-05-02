@@ -9,15 +9,15 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gisass.browser.R;
-import com.gisass.browser.databinding.GridAdapterLayoutBinding;
-import com.gisass.browser.viewModels.StaticIconViewModel;
+import com.gisass.browser.databinding.GridWithBackgroundAdapterLayoutBinding;
+import com.gisass.browser.viewModels.GridIconWithBackgroundViewModel;
 
-public class GridLayoutAdapter extends RecyclerView.Adapter<GridLayoutAdapter.GridViewHolder> {
+public class GridWithBackgroundAdapter extends RecyclerView.Adapter<GridWithBackgroundAdapter.GridViewHolder> {
 
-    private StaticIconViewModel staticIconViewModel;
-    private GridAdapterLayoutBinding gridAdapterLayoutBinding;
+    private GridIconWithBackgroundViewModel staticIconViewModel;
+    private GridWithBackgroundAdapterLayoutBinding gridWithBackgroundAdapterLayoutBinding;
 
-    public GridLayoutAdapter(StaticIconViewModel staticIconViewModel) {
+    public GridWithBackgroundAdapter(GridIconWithBackgroundViewModel staticIconViewModel) {
         this.staticIconViewModel = staticIconViewModel;
     }
 
@@ -27,16 +27,16 @@ public class GridLayoutAdapter extends RecyclerView.Adapter<GridLayoutAdapter.Gr
     public GridViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.grid_adapter_layout, parent, false);
-        gridAdapterLayoutBinding = DataBindingUtil.bind(view);
+        View view = layoutInflater.inflate(R.layout.grid_with_background_adapter_layout, parent, false);
+        gridWithBackgroundAdapterLayoutBinding = DataBindingUtil.bind(view);
         return new GridViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull GridViewHolder holder, int position) {
 
-        gridAdapterLayoutBinding.setViewModel(staticIconViewModel.getStaticIconModel(position));
-        gridAdapterLayoutBinding.executePendingBindings();
+        gridWithBackgroundAdapterLayoutBinding.setViewModel(staticIconViewModel.getStaticIconModel(position));
+        gridWithBackgroundAdapterLayoutBinding.executePendingBindings();
 
     }
 
