@@ -1,5 +1,6 @@
 package com.gisass.browser.viewModels;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.gisass.browser.adapters.GridLayoutAdapter;
@@ -9,25 +10,29 @@ import java.util.ArrayList;
 
 public class StaticIconViewModel extends ViewModel {
 
-    private ArrayList<StaticIconModel> staticIconModels;
+    private MutableLiveData<ArrayList<StaticIconModel>> staticIconModels;
     private GridLayoutAdapter gridLayoutAdapter;
 
     public StaticIconViewModel() {
+
+    }
+
+    public void init() {
         gridLayoutAdapter = new GridLayoutAdapter(this);
     }
 
-    public ArrayList<StaticIconModel> getStaticIconModels() {
+    public MutableLiveData<ArrayList<StaticIconModel>> getStaticIconModels() {
         return staticIconModels;
     }
 
-    public void setStaticIconModels(ArrayList<StaticIconModel> staticIconModels) {
+    public void setStaticIconModels(MutableLiveData<ArrayList<StaticIconModel>> staticIconModels) {
         this.staticIconModels = staticIconModels;
         gridLayoutAdapter.notifyDataSetChanged();
     }
 
     public StaticIconModel getStaticIconModel(int position) {
-        if (this.staticIconModels != null && this.staticIconModels.size() > 0)
-            return this.staticIconModels.get(position);
+        if (this.staticIconModels != null && this.staticIconModels.getValue().size() > 0)
+            return this.staticIconModels.getValue().get(position);
         else
             return null;
     }

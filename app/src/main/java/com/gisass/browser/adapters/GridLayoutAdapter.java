@@ -42,7 +42,7 @@ public class GridLayoutAdapter extends RecyclerView.Adapter<GridLayoutAdapter.Gr
 
     @Override
     public int getItemCount() {
-        return staticIconViewModel.getStaticIconModels().size();
+        return staticIconViewModel.getStaticIconModels().getValue().size();
     }
 
 
