@@ -9,18 +9,21 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gisass.browser.R;
-import com.gisass.browser.databinding.GridAdapterLayoutBinding;
-import com.gisass.browser.databinding.GridWithBackgroundAdapterLayoutBinding;
+import com.gisass.browser.databinding.ActivityGridRecyclerViewBinding;
+import com.gisass.browser.databinding.ActivityGridWithBackgroundBinding;
+import com.gisass.browser.databinding.HeadingLayoutBinding;
 import com.gisass.browser.models.StaticIconModel;
 import com.gisass.browser.models.StaticIconWithBackgroundModel;
 import com.gisass.browser.viewModels.ViewInTabViewModel;
 
+import java.util.ArrayList;
+
 public class ViewInTabAdapter extends RecyclerView.Adapter<ViewInTabAdapter.ViewInTabHolder> {
 
     private ViewInTabViewModel viewInTabViewModel;
-    private GridAdapterLayoutBinding gridAdapterLayoutBinding;
-    private GridWithBackgroundAdapterLayoutBinding gridWithBackgroundAdapterLayoutBinding;
-
+    private ActivityGridRecyclerViewBinding activityGridRecyclerViewBinding;
+    private ActivityGridWithBackgroundBinding activityGridWithBackgroundBinding;
+    private HeadingLayoutBinding headingLayoutBinding;
     public ViewInTabAdapter(ViewInTabViewModel staticIconViewModel) {
         this.viewInTabViewModel = staticIconViewModel;
     }
@@ -33,12 +36,17 @@ public class ViewInTabAdapter extends RecyclerView.Adapter<ViewInTabAdapter.View
         View view = null;
         switch (viewType) {
             case 1:
-                view = layoutInflater.inflate(R.layout.grid_adapter_layout, parent, false);
-                gridAdapterLayoutBinding = DataBindingUtil.bind(view);
+                view = layoutInflater.inflate(R.layout.activity_grid_recycler_view, parent, false);
+                activityGridRecyclerViewBinding = DataBindingUtil.bind(view);
                 break;
             case 2:
-                view = layoutInflater.inflate(R.layout.grid_with_background_adapter_layout, parent, false);
-                gridWithBackgroundAdapterLayoutBinding = DataBindingUtil.bind(view);
+                view = layoutInflater.inflate(R.layout.activity_grid_with_background, parent, false);
+                activityGridWithBackgroundBinding = DataBindingUtil.bind(view);
+                break;
+
+            case 3:
+                view = layoutInflater.inflate(R.layout.heading_layout, parent, false);
+                headingLayoutBinding = DataBindingUtil.bind(view);
                 break;
         }
 
@@ -51,12 +59,15 @@ public class ViewInTabAdapter extends RecyclerView.Adapter<ViewInTabAdapter.View
 
         switch (getItemViewType(position)) {
             case 1:
-                gridAdapterLayoutBinding.setViewModel((StaticIconModel) viewInTabViewModel.getItem(position));
-                gridAdapterLayoutBinding.executePendingBindings();
+                activityGridRecyclerViewBinding.setViewModel(viewInTabViewModel.getStaticIconViewModel());
+                activityGridRecyclerViewBinding.executePendingBindings();
                 break;
             case 2:
-                gridWithBackgroundAdapterLayoutBinding.setViewModel((StaticIconWithBackgroundModel) viewInTabViewModel.getItem(position));
-                gridWithBackgroundAdapterLayoutBinding.executePendingBindings();
+                activityGridWithBackgroundBinding.setViewModel(viewInTabViewModel.getGridIconWithBackgroundViewModel());
+                activityGridWithBackgroundBinding.executePendingBindings();
+                break;
+            case 3:
+                headingLayoutBinding.setTitle((String) viewInTabViewModel.getItem(position));
                 break;
         }
     }
@@ -68,12 +79,27 @@ public class ViewInTabAdapter extends RecyclerView.Adapter<ViewInTabAdapter.View
 
     @Override
     public int getItemViewType(int position) {
-        if (viewInTabViewModel.getItem(position) instanceof StaticIconModel)
-            return 1;
-        else if (viewInTabViewModel.getItem(position) instanceof StaticIconWithBackgroundModel)
-            return 2;
-        else
+
+        Object object = viewInTabViewModel.getDataArrayModels().get(position);
+
+        if (object instanceof ArrayList) {
+            Object innerObj = ((ArrayList) object).get(0);
+            if (innerObj instanceof StaticIconModel)
+                return 1;
+            else if (innerObj instanceof StaticIconWithBackgroundModel)
+                return 2;
+
+
+        } else {
             return 3;
+        }
+        return 3;
+//        if (viewInTabViewModel.getItem(position) instanceof StaticIconModel)
+//            return 1;
+//        else if (viewInTabViewModel.getItem(position) instanceof StaticIconWithBackgroundModel)
+//            return 2;
+//        else
+//            return 3;
     }
 
     class ViewInTabHolder extends RecyclerView.ViewHolder {

@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -26,7 +25,11 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProviders;
 
+import com.gisass.browser.databinding.ActivityViewInTabBinding;
+import com.gisass.browser.viewModels.ViewInTabViewModel;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -178,15 +181,19 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
         @Override
         public View onInflateView(@NonNull final LayoutInflater inflater,
                                   @Nullable final ViewGroup parent, final int viewType) {
-            View view;
+            View view = inflater.inflate(R.layout.activity_view_in_tab, parent, false);
+            ViewInTabViewModel viewInTabViewModel = ViewModelProviders.of(MainActivity.this).get(ViewInTabViewModel.class);
+            ActivityViewInTabBinding activityViewInTabBinding = DataBindingUtil.bind(view);
+            viewInTabViewModel.init();
+            activityViewInTabBinding.setViewModel(viewInTabViewModel);
 
-            if (viewType == 0) {
-                view = inflater.inflate(R.layout.tab_text_view, parent, false);
-            } else if (viewType == 1) {
-                view = inflater.inflate(R.layout.tab_edit_text, parent, false);
-            } else {
-                view = inflater.inflate(R.layout.tab_list_view, parent, false);
-            }
+//            if (viewType == 0) {
+//                view = inflater.inflate(R.layout.tab_text_view, parent, false);
+//            } else if (viewType == 1) {
+//                view = inflater.inflate(R.layout.tab_edit_text, parent, false);
+//            } else {
+//                view = inflater.inflate(R.layout.tab_list_view, parent, false);
+//            }
 
             Toolbar toolbar = view.findViewById(R.id.toolbar);
             toolbar.inflateMenu(R.menu.tab);
@@ -207,18 +214,6 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
             Toolbar toolbar = findViewById(R.id.toolbar);
             toolbar.setVisibility(tabSwitcher.isSwitcherShown() ? View.GONE : View.VISIBLE);
 
-            if (viewType == 1) {
-                EditText editText = findViewById(android.R.id.edit);
-
-                if (savedInstanceState == null) {
-                    editText.setText(null);
-                }
-
-                editText.requestFocus();
-            } else if (viewType == 2 && state != null) {
-                ListView listView = findViewById(android.R.id.list);
-                state.loadItems(listView);
-            }
         }
 
         @Override

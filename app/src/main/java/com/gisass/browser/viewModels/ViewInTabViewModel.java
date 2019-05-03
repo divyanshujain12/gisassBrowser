@@ -42,14 +42,17 @@ public class ViewInTabViewModel extends ViewModel {
         return gridIconWithBackgroundViewModel;
     }
 
+
     private void initAllViewModel() {
         staticIconViewModel.init();
         gridIconWithBackgroundViewModel.init();
     }
 
     private void getAllModels() {
-        dataArray.addAll(staticIconViewModel.getStaticIconModels());
-        dataArray.addAll(gridIconWithBackgroundViewModel.getStaticIconModels());
+        dataArray.add("Social");
+        dataArray.add(staticIconViewModel.getStaticIconModels());
+        dataArray.add("Education");
+        dataArray.add(gridIconWithBackgroundViewModel.getStaticIconModels());
         viewInTabAdapter.notifyDataSetChanged();
     }
 
