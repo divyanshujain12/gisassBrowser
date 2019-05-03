@@ -9,16 +9,16 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gisass.browser.R;
-import com.gisass.browser.databinding.GridAdapterLayoutBinding;
-import com.gisass.browser.viewModels.SocialViewModel;
+import com.gisass.browser.databinding.AdapterNewsBinding;
+import com.gisass.browser.viewModels.NewsViewModel;
 
-public class GridLayoutAdapter extends RecyclerView.Adapter<GridLayoutAdapter.GridViewHolder> {
+public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.GridViewHolder> {
 
-    private SocialViewModel staticIconViewModel;
-    private GridAdapterLayoutBinding gridAdapterLayoutBinding;
+    private NewsViewModel newsViewModel;
+    private AdapterNewsBinding adapterNewsBinding;
 
-    public GridLayoutAdapter(SocialViewModel staticIconViewModel) {
-        this.staticIconViewModel = staticIconViewModel;
+    public NewsAdapter(NewsViewModel newsViewModel) {
+        this.newsViewModel = newsViewModel;
     }
 
 
@@ -27,22 +27,21 @@ public class GridLayoutAdapter extends RecyclerView.Adapter<GridLayoutAdapter.Gr
     public GridViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.grid_adapter_layout, parent, false);
-        gridAdapterLayoutBinding = DataBindingUtil.bind(view);
+        View view = layoutInflater.inflate(R.layout.adapter_news, parent, false);
+        adapterNewsBinding = DataBindingUtil.bind(view);
         return new GridViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull GridViewHolder holder, int position) {
-
-        gridAdapterLayoutBinding.setViewModel(staticIconViewModel.getStaticIconModel(position));
-        gridAdapterLayoutBinding.executePendingBindings();
+        adapterNewsBinding.setViewModel(newsViewModel.getNewsModel(position));
+        adapterNewsBinding.executePendingBindings();
 
     }
 
     @Override
     public int getItemCount() {
-        return staticIconViewModel.getStaticIconModels().size();
+        return newsViewModel.getNewsModels().size();
     }
 
 

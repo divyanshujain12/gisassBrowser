@@ -8,7 +8,7 @@ import com.gisass.browser.models.StaticIconWithBackgroundModel;
 
 import java.util.ArrayList;
 
-public class GridIconWithBackgroundViewModel extends ViewModel {
+public class EducationAndJobViewModel extends ViewModel {
 
     private String[] appNames = {"Education", "Jobs", "Games", "View All"};
     private int[] appIcons = {R.drawable.education, R.drawable.jobs, R.drawable.gamew, R.drawable.viewall};

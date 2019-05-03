@@ -19,4 +19,5 @@
     <string name="theme_preference_summary">Allows to choose the theme, which should be used by the example app</string>
     <string name="theme_preference_default_value">0</string>
     <string name="search">Search</string>
+
 </resources>

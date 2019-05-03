@@ -10,14 +10,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.gisass.browser.R;
 import com.gisass.browser.databinding.GridWithBackgroundAdapterLayoutBinding;
-import com.gisass.browser.viewModels.GridIconWithBackgroundViewModel;
+import com.gisass.browser.viewModels.EducationAndJobViewModel;
 
 public class GridWithBackgroundAdapter extends RecyclerView.Adapter<GridWithBackgroundAdapter.GridViewHolder> {
 
-    private GridIconWithBackgroundViewModel staticIconViewModel;
+    private EducationAndJobViewModel staticIconViewModel;
     private GridWithBackgroundAdapterLayoutBinding gridWithBackgroundAdapterLayoutBinding;
 
-    public GridWithBackgroundAdapter(GridIconWithBackgroundViewModel staticIconViewModel) {
+    public GridWithBackgroundAdapter(EducationAndJobViewModel staticIconViewModel) {
         this.staticIconViewModel = staticIconViewModel;
     }
 

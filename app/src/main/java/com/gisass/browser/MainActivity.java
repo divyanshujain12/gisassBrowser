@@ -494,7 +494,7 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
 
     @NonNull
     private Tab createTab(final int index) {
-        CharSequence title = getString(R.string.tab_title, index + 1);
+        CharSequence title = "Gisass Browser";
         Tab tab = new Tab(title);
         Bundle parameters = new Bundle();
         parameters.putInt(VIEW_TYPE_EXTRA, index % 3);

@@ -5,7 +5,7 @@
 
         <variable
             name="viewModel"
-            type="com.gisass.browser.viewModels.StaticIconViewModel" />
+            type="com.gisass.browser.viewModels.SocialViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"

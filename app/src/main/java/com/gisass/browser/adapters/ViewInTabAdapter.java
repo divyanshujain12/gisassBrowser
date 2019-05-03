@@ -12,6 +12,10 @@ import com.gisass.browser.R;
 import com.gisass.browser.databinding.ActivityGridRecyclerViewBinding;
 import com.gisass.browser.databinding.ActivityGridWithBackgroundBinding;
 import com.gisass.browser.databinding.HeadingLayoutBinding;
+import com.gisass.browser.databinding.ViewAppsettingBinding;
+import com.gisass.browser.databinding.ViewNewsBinding;
+import com.gisass.browser.models.AppSettingModel;
+import com.gisass.browser.models.NewsModel;
 import com.gisass.browser.models.StaticIconModel;
 import com.gisass.browser.models.StaticIconWithBackgroundModel;
 import com.gisass.browser.viewModels.ViewInTabViewModel;
@@ -23,7 +27,11 @@ public class ViewInTabAdapter extends RecyclerView.Adapter<ViewInTabAdapter.View
     private ViewInTabViewModel viewInTabViewModel;
     private ActivityGridRecyclerViewBinding activityGridRecyclerViewBinding;
     private ActivityGridWithBackgroundBinding activityGridWithBackgroundBinding;
+    private ViewAppsettingBinding viewAppsettingBinding;
     private HeadingLayoutBinding headingLayoutBinding;
+    private ViewNewsBinding viewNewsBinding;
+
+
     public ViewInTabAdapter(ViewInTabViewModel staticIconViewModel) {
         this.viewInTabViewModel = staticIconViewModel;
     }
@@ -43,8 +51,16 @@ public class ViewInTabAdapter extends RecyclerView.Adapter<ViewInTabAdapter.View
                 view = layoutInflater.inflate(R.layout.activity_grid_with_background, parent, false);
                 activityGridWithBackgroundBinding = DataBindingUtil.bind(view);
                 break;
-
             case 3:
+                view = layoutInflater.inflate(R.layout.view_appsetting, parent, false);
+                viewAppsettingBinding = DataBindingUtil.bind(view);
+                break;
+
+            case 4:
+                view = layoutInflater.inflate(R.layout.view_news, parent, false);
+                viewNewsBinding = DataBindingUtil.bind(view);
+                break;
+            case 5:
                 view = layoutInflater.inflate(R.layout.heading_layout, parent, false);
                 headingLayoutBinding = DataBindingUtil.bind(view);
                 break;
@@ -67,7 +83,16 @@ public class ViewInTabAdapter extends RecyclerView.Adapter<ViewInTabAdapter.View
                 activityGridWithBackgroundBinding.executePendingBindings();
                 break;
             case 3:
+                viewAppsettingBinding.setViewModel(viewInTabViewModel.getAppSettingViewModel());
+                viewAppsettingBinding.executePendingBindings();
+                break;
+            case 4:
+                viewNewsBinding.setViewModel(viewInTabViewModel.getNewsViewModel());
+                viewNewsBinding.executePendingBindings();
+                break;
+            case 5:
                 headingLayoutBinding.setTitle((String) viewInTabViewModel.getItem(position));
+                headingLayoutBinding.executePendingBindings();
                 break;
         }
     }
@@ -88,12 +113,16 @@ public class ViewInTabAdapter extends RecyclerView.Adapter<ViewInTabAdapter.View
                 return 1;
             else if (innerObj instanceof StaticIconWithBackgroundModel)
                 return 2;
+            else if (innerObj instanceof AppSettingModel)
+                return 3;
+            else if (innerObj instanceof NewsModel)
+                return 4;
 
 
         } else {
-            return 3;
+            return 5;
         }
-        return 3;
+        return 5;
 //        if (viewInTabViewModel.getItem(position) instanceof StaticIconModel)
 //            return 1;
 //        else if (viewInTabViewModel.getItem(position) instanceof StaticIconWithBackgroundModel)

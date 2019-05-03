@@ -9,16 +9,17 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gisass.browser.R;
-import com.gisass.browser.databinding.GridAdapterLayoutBinding;
-import com.gisass.browser.viewModels.SocialViewModel;
+import com.gisass.browser.databinding.AdapterAppSettingBinding;
+import com.gisass.browser.viewModels.AppSettingViewModel;
 
-public class GridLayoutAdapter extends RecyclerView.Adapter<GridLayoutAdapter.GridViewHolder> {
+public class AppSettingAdapter extends RecyclerView.Adapter<AppSettingAdapter.GridViewHolder> {
 
-    private SocialViewModel staticIconViewModel;
-    private GridAdapterLayoutBinding gridAdapterLayoutBinding;
+    private AppSettingViewModel appSettingViewModel;
 
-    public GridLayoutAdapter(SocialViewModel staticIconViewModel) {
-        this.staticIconViewModel = staticIconViewModel;
+    private AdapterAppSettingBinding adapterAppSettingBinding;
+
+    public AppSettingAdapter(AppSettingViewModel appSettingViewModel) {
+        this.appSettingViewModel = appSettingViewModel;
     }
 
 
@@ -27,22 +28,22 @@ public class GridLayoutAdapter extends RecyclerView.Adapter<GridLayoutAdapter.Gr
     public GridViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.grid_adapter_layout, parent, false);
-        gridAdapterLayoutBinding = DataBindingUtil.bind(view);
+        View view = layoutInflater.inflate(R.layout.adapter_app_setting, parent, false);
+        adapterAppSettingBinding = DataBindingUtil.bind(view);
+
         return new GridViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull GridViewHolder holder, int position) {
 
-        gridAdapterLayoutBinding.setViewModel(staticIconViewModel.getStaticIconModel(position));
-        gridAdapterLayoutBinding.executePendingBindings();
-
+        adapterAppSettingBinding.setViewModel(appSettingViewModel.getAppSettingModel(position));
+        adapterAppSettingBinding.executePendingBindings();
     }
 
     @Override
     public int getItemCount() {
-        return staticIconViewModel.getStaticIconModels().size();
+        return appSettingViewModel.getAppSettingModels().size();
     }
 
 

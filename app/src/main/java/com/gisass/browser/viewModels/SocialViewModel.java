@@ -8,14 +8,14 @@ import com.gisass.browser.models.StaticIconModel;
 
 import java.util.ArrayList;
 
-public class StaticIconViewModel extends ViewModel {
+public class SocialViewModel extends ViewModel {
 
     private String[] appNames = {"Google", "Facebook", "Instagram", "Youtube", "Amazon", "Flipkart", "Hotstar", "Bookmyshow", "HotVideo", "PlayStore", "Travel", "Cricket"};
     private int[] appIcons = {R.drawable.google, R.drawable.facebook, R.drawable.instagram, R.drawable.youtube, R.drawable.amazon, R.drawable.flipkart, R.drawable.hotstar, R.drawable.bookmyshow, R.drawable.hotvideos, R.drawable.playstore, R.drawable.booking, R.drawable.cricket};
     private ArrayList<StaticIconModel> staticIconModels;
     private GridLayoutAdapter gridLayoutAdapter;
 
-    public StaticIconViewModel() {
+    public SocialViewModel() {
 
     }
 
