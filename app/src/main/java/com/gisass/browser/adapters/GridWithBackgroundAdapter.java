@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gisass.browser.R;
@@ -16,6 +17,7 @@ public class GridWithBackgroundAdapter extends RecyclerView.Adapter<GridWithBack
 
     private EducationAndJobViewModel staticIconViewModel;
     private GridWithBackgroundAdapterLayoutBinding gridWithBackgroundAdapterLayoutBinding;
+    private MutableLiveData<String> url;
 
     public GridWithBackgroundAdapter(EducationAndJobViewModel staticIconViewModel) {
         this.staticIconViewModel = staticIconViewModel;
@@ -45,6 +47,9 @@ public class GridWithBackgroundAdapter extends RecyclerView.Adapter<GridWithBack
         return staticIconViewModel.getStaticIconModels().size();
     }
 
+    public void setUrl(MutableLiveData<String> url) {
+        this.url = url;
+    }
 
     class GridViewHolder extends RecyclerView.ViewHolder {
         GridViewHolder(View rootView) {

@@ -1,7 +1,8 @@
-package com.gisass.browser;
+package com.gisass.browser.activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -11,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -25,9 +27,13 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.asksira.webviewsuite.WebViewSuite;
+import com.gisass.browser.R;
 import com.gisass.browser.databinding.ActivityViewInTabBinding;
 import com.gisass.browser.viewModels.ViewInTabViewModel;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -50,14 +56,14 @@ import de.mrapp.android.tabswitcher.TabSwitcher;
 import de.mrapp.android.tabswitcher.TabSwitcherListener;
 import de.mrapp.android.util.ThemeUtil;
 import de.mrapp.android.util.multithreading.AbstractDataBinder;
-import de.mrapp.util.Condition;
 
 import static de.mrapp.android.util.DisplayUtil.getDisplayWidth;
 
 
 public class MainActivity extends AppCompatActivity implements TabSwitcherListener {
 
-
+    ActivityViewInTabBinding activityViewInTabBinding = null;
+    View view = null;
     private class State extends AbstractState
             implements AbstractDataBinder.Listener<ArrayAdapter<String>, Tab, ListView, Void>,
             TabPreviewListener {
@@ -66,18 +72,6 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
 
         State(@NonNull final Tab tab) {
             super(tab);
-        }
-
-
-        public void loadItems(@NonNull final ListView listView) {
-            Condition.INSTANCE.ensureNotNull(listView, "The list view may not be null");
-
-            if (adapter == null) {
-                dataBinder.addListener(this);
-                dataBinder.load(getTab(), listView);
-            } else if (listView.getAdapter() != adapter) {
-                listView.setAdapter(adapter);
-            }
         }
 
         @Override
@@ -181,11 +175,15 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
         @Override
         public View onInflateView(@NonNull final LayoutInflater inflater,
                                   @Nullable final ViewGroup parent, final int viewType) {
-            View view = inflater.inflate(R.layout.activity_view_in_tab, parent, false);
-            ViewInTabViewModel viewInTabViewModel = ViewModelProviders.of(MainActivity.this).get(ViewInTabViewModel.class);
-            ActivityViewInTabBinding activityViewInTabBinding = DataBindingUtil.bind(view);
-            viewInTabViewModel.init();
-            activityViewInTabBinding.setViewModel(viewInTabViewModel);
+            if (view == null) {
+                view = inflater.inflate(R.layout.activity_view_in_tab, parent, false);
+                ViewInTabViewModel viewInTabViewModel = ViewModelProviders.of(MainActivity.this).get(ViewInTabViewModel.class);
+                activityViewInTabBinding = DataBindingUtil.bind(view);
+                HandleScroll(activityViewInTabBinding);
+                viewInTabViewModel.init();
+
+                onIconSelect(viewInTabViewModel);
+                activityViewInTabBinding.setViewModel(viewInTabViewModel);
 
 //            if (viewType == 0) {
 //                view = inflater.inflate(R.layout.tab_text_view, parent, false);
@@ -195,11 +193,12 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
 //                view = inflater.inflate(R.layout.tab_list_view, parent, false);
 //            }
 
-            Toolbar toolbar = view.findViewById(R.id.toolbar);
-            toolbar.inflateMenu(R.menu.tab);
-            toolbar.setOnMenuItemClickListener(createToolbarMenuListener());
-            Menu menu = toolbar.getMenu();
-            TabSwitcher.setupWithMenu(tabSwitcher, menu, createTabSwitcherButtonListener());
+                Toolbar toolbar = view.findViewById(R.id.toolbar);
+                toolbar.inflateMenu(R.menu.tab);
+                toolbar.setOnMenuItemClickListener(createToolbarMenuListener());
+                Menu menu = toolbar.getMenu();
+                TabSwitcher.setupWithMenu(tabSwitcher, menu, createTabSwitcherButtonListener());
+            }
             return view;
         }
 
@@ -227,6 +226,63 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
             return parameters != null ? parameters.getInt(VIEW_TYPE_EXTRA) : 0;
         }
 
+    }
+
+    private void onIconSelect(ViewInTabViewModel viewInTabViewModel) {
+        viewInTabViewModel.getUrl().observe(MainActivity.this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                hideExternalSearchBar(activityViewInTabBinding, true);
+                customizeWebSuite();
+                activityViewInTabBinding.webViewSuite.setVisibility(View.VISIBLE);
+                activityViewInTabBinding.contentCL.setVisibility(View.GONE);
+                activityViewInTabBinding.webViewSuite.startLoading(s);
+            }
+        });
+    }
+
+    private void customizeWebSuite() {
+        activityViewInTabBinding.webViewSuite.customizeClient(new WebViewSuite.WebViewSuiteCallback() {
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                activityViewInTabBinding.toolbarET.setText(url);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return false;
+            }
+        });
+    }
+
+    private void HandleScroll(final ActivityViewInTabBinding activityViewInTabBinding) {
+        activityViewInTabBinding.viewNSL.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (scrollY >= 0 && scrollY <= 140) {
+                    activityViewInTabBinding.externalET.setVisibility(View.VISIBLE);
+                    activityViewInTabBinding.toolbarET.setVisibility(View.GONE);
+                } else {
+                    activityViewInTabBinding.externalET.setVisibility(View.GONE);
+                    activityViewInTabBinding.toolbarET.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+
+    private void hideExternalSearchBar(final ActivityViewInTabBinding activityViewInTabBinding, boolean hide) {
+        if (hide) {
+            activityViewInTabBinding.externalET.setVisibility(View.GONE);
+            activityViewInTabBinding.toolbarET.setVisibility(View.VISIBLE);
+        } else {
+            activityViewInTabBinding.externalET.setVisibility(View.VISIBLE);
+            activityViewInTabBinding.toolbarET.setVisibility(View.GONE);
+        }
     }
 
     private static class DataBinder
@@ -498,7 +554,6 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
         Tab tab = new Tab(title);
         Bundle parameters = new Bundle();
         parameters.putInt(VIEW_TYPE_EXTRA, index % 3);
-        tab.setParameters(parameters);
         return tab;
     }
 
@@ -584,4 +639,15 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
         inflateMenu();
     }
 
+    @Override
+    public void onBackPressed() {
+
+        if (activityViewInTabBinding.webViewSuite.getVisibility() == View.VISIBLE && !activityViewInTabBinding.webViewSuite.goBackIfPossible()) {
+            activityViewInTabBinding.webViewSuite.setVisibility(View.GONE);
+            activityViewInTabBinding.contentCL.setVisibility(View.VISIBLE);
+            hideExternalSearchBar(activityViewInTabBinding, false);
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

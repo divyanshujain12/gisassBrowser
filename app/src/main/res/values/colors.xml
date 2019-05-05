@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="snackbar_action_text_color">#FF00BCD4</color>
     <color name="window_background">@color/phone_tab_switcher_background_color</color>
+    <color name="bottom_tab">#123456</color>
 </resources>

@@ -1,5 +1,9 @@
 package com.gisass.browser.viewModels;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModel;
 
 import com.gisass.browser.R;
@@ -8,16 +12,17 @@ import com.gisass.browser.models.StaticIconModel;
 
 import java.util.ArrayList;
 
-public class SocialViewModel extends ViewModel {
+public class SocialViewModel extends AndroidViewModel {
 
     private String[] appNames = {"Google", "Facebook", "Instagram", "Youtube", "Amazon", "Flipkart", "Hotstar", "Bookmyshow", "HotVideo", "PlayStore", "Travel", "Cricket"};
     private int[] appIcons = {R.drawable.google, R.drawable.facebook, R.drawable.instagram, R.drawable.youtube, R.drawable.amazon, R.drawable.flipkart, R.drawable.hotstar, R.drawable.bookmyshow, R.drawable.hotvideos, R.drawable.playstore, R.drawable.booking, R.drawable.cricket};
     private ArrayList<StaticIconModel> staticIconModels;
     private GridLayoutAdapter gridLayoutAdapter;
 
-    public SocialViewModel() {
-
+    public SocialViewModel(@NonNull Application application) {
+        super(application);
     }
+
 
     public void init() {
         gridLayoutAdapter = new GridLayoutAdapter(this);

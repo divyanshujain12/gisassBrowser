@@ -24,7 +24,7 @@ public class NewsViewModel extends AndroidViewModel {
         newsModels = new ArrayList<>();
         newsAdapter = new NewsAdapter(this);
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 5; i++) {
             NewsModel newsModel = new NewsModel();
             newsModel.setNewsIcon(R.drawable.hotvideos);
             newsModel.setNews(getApplication().getString(R.string.lorem_ipsum));

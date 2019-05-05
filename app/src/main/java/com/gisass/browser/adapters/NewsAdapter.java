@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gisass.browser.R;
@@ -16,6 +17,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.GridViewHolder
 
     private NewsViewModel newsViewModel;
     private AdapterNewsBinding adapterNewsBinding;
+    private MutableLiveData<String> url;
 
     public NewsAdapter(NewsViewModel newsViewModel) {
         this.newsViewModel = newsViewModel;
@@ -35,6 +37,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.GridViewHolder
     @Override
     public void onBindViewHolder(@NonNull GridViewHolder holder, int position) {
         adapterNewsBinding.setViewModel(newsViewModel.getNewsModel(position));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         adapterNewsBinding.executePendingBindings();
 
     }
@@ -44,6 +52,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.GridViewHolder
         return newsViewModel.getNewsModels().size();
     }
 
+    public void setUrl(MutableLiveData<String> url) {
+        this.url = url;
+    }
 
     class GridViewHolder extends RecyclerView.ViewHolder {
         GridViewHolder(View rootView) {

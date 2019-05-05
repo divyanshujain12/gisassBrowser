@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gisass.browser.R;
@@ -16,9 +17,13 @@ public class GridLayoutAdapter extends RecyclerView.Adapter<GridLayoutAdapter.Gr
 
     private SocialViewModel staticIconViewModel;
     private GridAdapterLayoutBinding gridAdapterLayoutBinding;
+    private MutableLiveData<String> url;
+    private String[] allUrls;
 
     public GridLayoutAdapter(SocialViewModel staticIconViewModel) {
         this.staticIconViewModel = staticIconViewModel;
+        allUrls = staticIconViewModel.getApplication().getResources().getStringArray(R.array.social_sites);
+
     }
 
 
@@ -33,9 +38,15 @@ public class GridLayoutAdapter extends RecyclerView.Adapter<GridLayoutAdapter.Gr
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GridViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GridViewHolder holder, final int position) {
 
         gridAdapterLayoutBinding.setViewModel(staticIconViewModel.getStaticIconModel(position));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                url.setValue(allUrls[position]);
+            }
+        });
         gridAdapterLayoutBinding.executePendingBindings();
 
     }
@@ -45,6 +56,9 @@ public class GridLayoutAdapter extends RecyclerView.Adapter<GridLayoutAdapter.Gr
         return staticIconViewModel.getStaticIconModels().size();
     }
 
+    public void setUrl(MutableLiveData<String> url) {
+        this.url = url;
+    }
 
     class GridViewHolder extends RecyclerView.ViewHolder {
         GridViewHolder(View rootView) {

@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gisass.browser.R;
@@ -15,8 +16,11 @@ import com.gisass.browser.viewModels.AppSettingViewModel;
 public class AppSettingAdapter extends RecyclerView.Adapter<AppSettingAdapter.GridViewHolder> {
 
     private AppSettingViewModel appSettingViewModel;
-
     private AdapterAppSettingBinding adapterAppSettingBinding;
+
+
+
+    private MutableLiveData<String> url;
 
     public AppSettingAdapter(AppSettingViewModel appSettingViewModel) {
         this.appSettingViewModel = appSettingViewModel;
@@ -46,7 +50,9 @@ public class AppSettingAdapter extends RecyclerView.Adapter<AppSettingAdapter.Gr
         return appSettingViewModel.getAppSettingModels().size();
     }
 
-
+    public void setUrl(MutableLiveData<String> url) {
+        this.url = url;
+    }
     class GridViewHolder extends RecyclerView.ViewHolder {
         GridViewHolder(View rootView) {
             super(rootView);

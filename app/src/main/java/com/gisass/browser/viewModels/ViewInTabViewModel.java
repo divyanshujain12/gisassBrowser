@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.MutableLiveData;
 
 import com.gisass.browser.adapters.ViewInTabAdapter;
 
@@ -17,6 +18,7 @@ public class ViewInTabViewModel extends AndroidViewModel {
     private AppSettingViewModel appSettingViewModel;
     private NewsViewModel newsViewModel;
     private ViewInTabAdapter viewInTabAdapter;
+    private MutableLiveData<String> url;
 
     public ViewInTabViewModel(@NonNull Application application) {
         super(application);
@@ -24,10 +26,12 @@ public class ViewInTabViewModel extends AndroidViewModel {
 
     public void init() {
         dataArray = new ArrayList<>();
-
+        url = new MutableLiveData<>();
         viewInTabAdapter = new ViewInTabAdapter(this);
         initAllViewModel();
         getAllModels();
+
+
     }
 
     public ArrayList<Object> getDataArrayModels() {
@@ -59,14 +63,27 @@ public class ViewInTabViewModel extends AndroidViewModel {
     }
 
     private void initAllViewModel() {
-        staticIconViewModel = new SocialViewModel();
+        staticIconViewModel = new SocialViewModel(getApplication());
         gridIconWithBackgroundViewModel = new EducationAndJobViewModel();
         appSettingViewModel = new AppSettingViewModel();
         newsViewModel = new NewsViewModel(getApplication());
+        initializeAllModels();
+        setMutableUrlToAdapters();
+    }
+
+    private void initializeAllModels() {
         staticIconViewModel.init();
         gridIconWithBackgroundViewModel.init();
         appSettingViewModel.init();
         newsViewModel.init();
+    }
+
+    private void setMutableUrlToAdapters() {
+        staticIconViewModel.getAdapter().setUrl(url);
+    }
+
+    public MutableLiveData<String> getUrl() {
+        return url;
     }
 
     private void getAllModels() {

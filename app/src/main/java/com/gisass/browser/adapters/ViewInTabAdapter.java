@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gisass.browser.R;
@@ -30,6 +31,8 @@ public class ViewInTabAdapter extends RecyclerView.Adapter<ViewInTabAdapter.View
     private ViewAppsettingBinding viewAppsettingBinding;
     private HeadingLayoutBinding headingLayoutBinding;
     private ViewNewsBinding viewNewsBinding;
+
+    private MutableLiveData<RecyclerView> mutableRecyclerView = new MutableLiveData<>();
 
 
     public ViewInTabAdapter(ViewInTabViewModel staticIconViewModel) {
@@ -102,6 +105,14 @@ public class ViewInTabAdapter extends RecyclerView.Adapter<ViewInTabAdapter.View
         return viewInTabViewModel.getDataArrayModels().size();
     }
 
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+
+        mutableRecyclerView.setValue(recyclerView);
+    }
+
     @Override
     public int getItemViewType(int position) {
 
@@ -135,5 +146,9 @@ public class ViewInTabAdapter extends RecyclerView.Adapter<ViewInTabAdapter.View
         ViewInTabHolder(View rootView) {
             super(rootView);
         }
+    }
+
+    public MutableLiveData<RecyclerView> getmRecyclerView() {
+        return mutableRecyclerView;
     }
 }

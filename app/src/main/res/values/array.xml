@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="social_sites">
+        <item>https://www.google.com/</item>
+        <item>https://www.facebook.com/</item>
+        <item>https://www.instagram.com/</item>
+        <item>https://www.youtube.com/</item>
+        <item>https://www.amazon.in/</item>
+        <item>https://www.flipkart.com/</item>
+        <item>https://www.hotstar.com/</item>
+        <item>https://in.bookmyshow.com/</item>
+        <item>https://www.youtube.com/results?search_query=hot+videos</item>
+        <item>https://play.google.com/store</item>
+        <item>https://www.booking.com/</item>
+        <item>https://www.cricbuzz.com/</item>
+    </string-array>
+
+</resources>

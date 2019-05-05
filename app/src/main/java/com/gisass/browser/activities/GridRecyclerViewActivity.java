@@ -1,4 +1,4 @@
-package com.gisass.browser;
+package com.gisass.browser.activities;
 
 import android.os.Bundle;
 
@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.gisass.browser.R;
 import com.gisass.browser.databinding.ActivityGridRecyclerViewBinding;
 import com.gisass.browser.viewModels.SocialViewModel;
 

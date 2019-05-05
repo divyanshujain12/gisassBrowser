@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-<variable
-    name="viewModel"
-    type="com.gisass.browser.viewModels.ViewInTabViewModel" />
+
+        <variable
+            name="viewModel"
+            type="com.gisass.browser.viewModels.ViewInTabViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        tools:context=".activities.ViewInTabActivity">
 
-        tools:context=".ViewInTabActivity">
 
         <FrameLayout
             android:id="@+id/toolbarFL"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:layout_constraintBottom_toTopOf="@id/viewNSL"
+            app:layout_constraintBottom_toTopOf="@id/container"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -30,6 +31,7 @@
                 android:layout_height="match_parent"
                 android:ellipsize="marquee"
                 android:gravity="center_vertical"
+                android:visibility="gone"
                 android:singleLine="true"
                 android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
@@ -40,43 +42,139 @@
                 android:background="@android:color/transparent"
                 android:focusable="false"
                 android:theme="?attr/toolbarTheme"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-        </FrameLayout>
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/viewNSL"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbarFL">
-
-            <LinearLayout
-
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
                 <com.gisass.browser.customFontViews.CustomEditTextRegular
+                    android:id="@+id/toolbarET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/rounded_corner"
-                    android:layout_margin="@dimen/twenty_dp"
-                    android:padding="@dimen/ten_dp"
-                    android:drawableRight="@drawable/ic_search_black_24dp"
                     android:drawableEnd="@drawable/ic_search_black_24dp"
-                    android:hint="@string/search"/>
-
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/ItemRV"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:drawableRight="@drawable/ic_search_black_24dp"
+                    android:hint="@string/search"
                     android:padding="@dimen/ten_dp"
-                    app:setLinearAdapter="@{viewModel.getAdapter()}"
-                    android:layout_marginBottom="?attr/actionBarSize"/>
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+                    android:visibility="gone" />
+
+            </de.mrapp.android.util.view.UnfocusableToolbar>
+
+        </FrameLayout>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbarFL">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/contentCL"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <androidx.core.widget.NestedScrollView
+                    android:id="@+id/viewNSL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <com.gisass.browser.customFontViews.CustomEditTextRegular
+                            android:id="@+id/externalET"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/twenty_dp"
+                            android:background="@drawable/rounded_corner"
+                            android:drawableEnd="@drawable/ic_search_black_24dp"
+                            android:drawableRight="@drawable/ic_search_black_24dp"
+                            android:hint="@string/search"
+                            android:padding="@dimen/ten_dp" />
+
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/ItemRV"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="?attr/actionBarSize"
+                            android:padding="@dimen/ten_dp"
+                            app:setLinearAdapter="@{viewModel.getAdapter()}" />
+                    </LinearLayout>
+
+                </androidx.core.widget.NestedScrollView>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/bottomSheetLL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/bottom_tab"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="@dimen/ten_dp"
+                        android:src="@drawable/ic_airplay_black_24dp" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="@dimen/ten_dp"
+                        android:src="@drawable/ic_book_black_24dp" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="@dimen/ten_dp"
+                        android:src="@drawable/ic_filter_b_and_w_black_24dp" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="@dimen/ten_dp"
+                        android:src="@drawable/ic_account_box_black_24dp" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="@dimen/ten_dp"
+                        android:src="@drawable/ic_monetization_on_black_24dp" />
+
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.asksira.webviewsuite.WebViewSuite
+                android:id="@+id/webViewSuite"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:enableHorizontalScrollBar="false"
+                app:enableJavaScript="true"
+                app:enableVerticalScrollBar="false"
+                app:inflationDelay="100"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/toolbarFL"
+                app:overrideEmailLink="true"
+                app:overridePdfLink="true"
+                app:overrideTelLink="true"
+                app:showZoomControl="false"
+                app:webViewProgressBarStyle="linear" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
