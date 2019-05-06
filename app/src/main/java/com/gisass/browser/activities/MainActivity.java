@@ -185,14 +185,6 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
                 onIconSelect(viewInTabViewModel);
                 activityViewInTabBinding.setViewModel(viewInTabViewModel);
 
-//            if (viewType == 0) {
-//                view = inflater.inflate(R.layout.tab_text_view, parent, false);
-//            } else if (viewType == 1) {
-//                view = inflater.inflate(R.layout.tab_edit_text, parent, false);
-//            } else {
-//                view = inflater.inflate(R.layout.tab_list_view, parent, false);
-//            }
-
                 Toolbar toolbar = view.findViewById(R.id.toolbar);
                 toolbar.inflateMenu(R.menu.tab);
                 toolbar.setOnMenuItemClickListener(createToolbarMenuListener());

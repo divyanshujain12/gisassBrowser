@@ -26,7 +26,6 @@ public class GridLayoutAdapter extends RecyclerView.Adapter<GridLayoutAdapter.Gr
 
     }
 
-
     @NonNull
     @Override
     public GridViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
