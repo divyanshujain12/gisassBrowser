@@ -63,7 +63,9 @@ import static de.mrapp.android.util.DisplayUtil.getDisplayWidth;
 public class MainActivity extends AppCompatActivity implements TabSwitcherListener {
 
     ActivityViewInTabBinding activityViewInTabBinding = null;
+    ViewInTabViewModel viewInTabViewModel;
     View view = null;
+    private static String SELECTED_ICON_URL = "selected_icon_url";
 
     private class State extends AbstractState
             implements AbstractDataBinder.Listener<ArrayAdapter<String>, Tab, ListView, Void>,
@@ -176,22 +178,19 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
         @Override
         public View onInflateView(@NonNull final LayoutInflater inflater,
                                   @Nullable final ViewGroup parent, final int viewType) {
-            if (view == null) {
-                view = inflater.inflate(R.layout.activity_view_in_tab, parent, false);
-                ViewInTabViewModel viewInTabViewModel = ViewModelProviders.of(MainActivity.this).get(ViewInTabViewModel.class);
-                activityViewInTabBinding = DataBindingUtil.bind(view);
-                HandleScroll(activityViewInTabBinding);
-                viewInTabViewModel.init();
 
-                onIconSelect(viewInTabViewModel);
-                activityViewInTabBinding.setViewModel(viewInTabViewModel);
+            view = inflater.inflate(R.layout.activity_view_in_tab, parent, false);
+            viewInTabViewModel = ViewModelProviders.of(MainActivity.this).get(ViewInTabViewModel.class);
+            activityViewInTabBinding = DataBindingUtil.bind(view);
+            activityViewInTabBinding.setViewModel(viewInTabViewModel);
+            viewInTabViewModel.init();
 
-                Toolbar toolbar = view.findViewById(R.id.toolbar);
-                toolbar.inflateMenu(R.menu.tab);
-                toolbar.setOnMenuItemClickListener(createToolbarMenuListener());
-                Menu menu = toolbar.getMenu();
-                TabSwitcher.setupWithMenu(tabSwitcher, menu, createTabSwitcherButtonListener());
-            }
+            Toolbar toolbar = view.findViewById(R.id.toolbar);
+            toolbar.inflateMenu(R.menu.tab);
+            toolbar.setOnMenuItemClickListener(createToolbarMenuListener());
+            Menu menu = toolbar.getMenu();
+            TabSwitcher.setupWithMenu(tabSwitcher, menu, createTabSwitcherButtonListener());
+
             return view;
         }
 
@@ -201,6 +200,16 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
                               @NonNull final Tab tab, final int index, final int viewType,
                               @Nullable final State state,
                               @Nullable final Bundle savedInstanceState) {
+            HandleScroll();
+            onIconSelect();
+
+            Bundle bundle = tab.getParameters();
+            if (bundle != null) {
+                String url = bundle.getString(SELECTED_ICON_URL);
+                loadUrlToWebview(url);
+            }
+
+
             TextView textView = findViewById(android.R.id.title);
             textView.setText(tab.getTitle());
             Toolbar toolbar = findViewById(R.id.toolbar);
@@ -221,15 +230,21 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
 
     }
 
-    private void onIconSelect(ViewInTabViewModel viewInTabViewModel) {
+    private void loadUrlToWebview(String url) {
+        if (url != null && !url.equals("")) {
+            hideExternalSearchBar(true);
+            customizeWebSuite();
+            activityViewInTabBinding.webViewSuite.setVisibility(View.VISIBLE);
+            activityViewInTabBinding.contentCL.setVisibility(View.GONE);
+            activityViewInTabBinding.webViewSuite.startLoading(url);
+        }
+    }
+
+    private void onIconSelect() {
         viewInTabViewModel.getUrl().observe(MainActivity.this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                hideExternalSearchBar(activityViewInTabBinding, true);
-                customizeWebSuite();
-                activityViewInTabBinding.webViewSuite.setVisibility(View.VISIBLE);
-                activityViewInTabBinding.contentCL.setVisibility(View.GONE);
-                activityViewInTabBinding.webViewSuite.startLoading(s);
+                tabSwitcher.addTab(createTab(tabSwitcher.getCount(), s), 0, createRevealAnimation());
             }
         });
     }
@@ -253,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
         });
     }
 
-    private void HandleScroll(final ActivityViewInTabBinding activityViewInTabBinding) {
+    private void HandleScroll() {
         activityViewInTabBinding.viewNSL.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
@@ -268,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
         });
     }
 
-    private void hideExternalSearchBar(final ActivityViewInTabBinding activityViewInTabBinding, boolean hide) {
+    private void hideExternalSearchBar(boolean hide) {
         if (hide) {
             activityViewInTabBinding.externalET.setVisibility(View.GONE);
             activityViewInTabBinding.toolbarET.setVisibility(View.VISIBLE);
@@ -367,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
             public void onClick(final View view) {
                 int index = tabSwitcher.getCount();
                 Animation animation = createRevealAnimation();
-                tabSwitcher.addTab(createTab(index), 0, animation);
+                tabSwitcher.addTab(createTab(index, ""), 0, animation);
             }
 
         };
@@ -391,7 +406,7 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
                         return true;
                     case R.id.add_tab_menu_item:
                         int index = tabSwitcher.getCount();
-                        Tab tab = createTab(index);
+                        Tab tab = createTab(index, "");
 
                         if (tabSwitcher.isSwitcherShown()) {
                             tabSwitcher.addTab(tab, 0, createRevealAnimation());
@@ -440,7 +455,7 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
             @Override
             public void onAddTab(@NonNull final TabSwitcher tabSwitcher) {
                 int index = tabSwitcher.getCount();
-                Tab tab = createTab(index);
+                Tab tab = createTab(index, "");
                 tabSwitcher.addTab(tab, 0);
             }
 
@@ -542,11 +557,13 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
 
 
     @NonNull
-    private Tab createTab(final int index) {
+    private Tab createTab(final int index, String url) {
         CharSequence title = "Gisass Browser";
         Tab tab = new Tab(title);
         Bundle parameters = new Bundle();
         parameters.putInt(VIEW_TYPE_EXTRA, index % 3);
+        parameters.putString(SELECTED_ICON_URL, url);
+        tab.setParameters(parameters);
         return tab;
     }
 
@@ -623,7 +640,7 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
         tabSwitcher.showToolbars(true);
 
         for (int i = 0; i < TAB_COUNT; i++) {
-            tabSwitcher.addTab(createTab(i));
+            tabSwitcher.addTab(createTab(i, ""));
         }
 
         tabSwitcher.showAddTabButton(createAddTabButtonListener());
@@ -638,9 +655,19 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
         if (activityViewInTabBinding.webViewSuite.getVisibility() == View.VISIBLE && !activityViewInTabBinding.webViewSuite.goBackIfPossible()) {
             activityViewInTabBinding.webViewSuite.setVisibility(View.GONE);
             activityViewInTabBinding.contentCL.setVisibility(View.VISIBLE);
-            hideExternalSearchBar(activityViewInTabBinding, false);
+            hideExternalSearchBar(false);
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Bundle bundle = tabSwitcher.getSelectedTab().getParameters();
+        if (bundle == null)
+            bundle = new Bundle();
+        bundle.putString(SELECTED_ICON_URL, activityViewInTabBinding.toolbarET.getText().toString());
+        tabSwitcher.getSelectedTab().setParameters(bundle);
     }
 }
