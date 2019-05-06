@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
 
     ActivityViewInTabBinding activityViewInTabBinding = null;
     View view = null;
+
     private class State extends AbstractState
             implements AbstractDataBinder.Listener<ArrayAdapter<String>, Tab, ListView, Void>,
             TabPreviewListener {
