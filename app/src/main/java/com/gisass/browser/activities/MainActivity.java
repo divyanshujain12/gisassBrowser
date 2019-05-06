@@ -200,15 +200,19 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
                               @NonNull final Tab tab, final int index, final int viewType,
                               @Nullable final State state,
                               @Nullable final Bundle savedInstanceState) {
-            HandleScroll();
-            onIconSelect();
-
             Bundle bundle = tab.getParameters();
-            if (bundle != null) {
-                String url = bundle.getString(SELECTED_ICON_URL);
-                loadUrlToWebview(url);
-            }
+            String url = "";
+            if (bundle != null)
+                url = bundle.getString(SELECTED_ICON_URL);
 
+            if (savedInstanceState == null) {
+                HandleScroll();
+                onIconSelect();
+                loadUrlToWebview(url);
+            } else if (!url.equals("")) {
+                showWebSuite();
+
+            }
 
             TextView textView = findViewById(android.R.id.title);
             textView.setText(tab.getTitle());
@@ -234,10 +238,14 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
         if (url != null && !url.equals("")) {
             hideExternalSearchBar(true);
             customizeWebSuite();
-            activityViewInTabBinding.webViewSuite.setVisibility(View.VISIBLE);
-            activityViewInTabBinding.contentCL.setVisibility(View.GONE);
+            showWebSuite();
             activityViewInTabBinding.webViewSuite.startLoading(url);
         }
+    }
+
+    private void showWebSuite() {
+        activityViewInTabBinding.webViewSuite.setVisibility(View.VISIBLE);
+        activityViewInTabBinding.contentCL.setVisibility(View.GONE);
     }
 
     private void onIconSelect() {
