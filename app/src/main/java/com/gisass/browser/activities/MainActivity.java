@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -104,13 +105,13 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
 
         @Override
         public final void saveInstanceState(@NonNull final Bundle outState) {
+
+            activityViewInTabBinding.webViewSuite.getWebView().saveState(outState);
             if (adapter != null && !adapter.isEmpty()) {
                 String[] array = new String[adapter.getCount()];
-
                 for (int i = 0; i < array.length; i++) {
                     array[i] = adapter.getItem(i);
                 }
-
                 outState.putStringArray(String.format(ADAPTER_STATE_EXTRA, getTab().getTitle()), array);
             }
         }
@@ -118,13 +119,14 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
         @Override
         public void restoreInstanceState(@Nullable final Bundle savedInstanceState) {
             if (savedInstanceState != null) {
-                String key = String.format(ADAPTER_STATE_EXTRA, getTab().getTitle());
-                String[] items = savedInstanceState.getStringArray(key);
-
-                if (items != null && items.length > 0) {
-                    adapter = new ArrayAdapter<>(MainActivity.this,
-                            android.R.layout.simple_list_item_1, items);
-                }
+                //  activityViewInTabBinding.webViewSuite.getWebView().restoreState(savedInstanceState);
+//                String key = String.format(ADAPTER_STATE_EXTRA, getTab().getTitle());
+//                String[] items = savedInstanceState.getStringArray(key);
+//
+//                if (items != null && items.length > 0) {
+//                    adapter = new ArrayAdapter<>(MainActivity.this,
+//                            android.R.layout.simple_list_item_1, items);
+//                }
             }
         }
 
@@ -145,8 +147,8 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
                                       @NonNull final View view, @NonNull final Tab tab,
                                       final int index, final int viewType,
                                       @Nullable final Bundle savedInstanceState) {
-            if (viewType == 2) {
-                State state = new State(tab);
+
+            State state = new State(tab);
                 tabSwitcher.addTabPreviewListener(state);
 
                 if (savedInstanceState != null) {
@@ -154,9 +156,8 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
                 }
 
                 return state;
-            }
 
-            return null;
+
         }
 
         @Override
@@ -209,8 +210,17 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
                 HandleScroll();
                 onIconSelect();
                 loadUrlToWebview(url);
-            } else if (!url.equals("")) {
+            } else if (state != null) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        activityViewInTabBinding.webViewSuite.getWebView().restoreState(savedInstanceState);
+                    }
+                }, 200);
+
+
                 showWebSuite();
+                state.restoreInstanceState(savedInstanceState);
 
             }
 
