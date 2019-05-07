@@ -12,6 +12,7 @@ import com.gisass.browser.customViews.FocusEditText;
 public class FloatingSearchBar extends AppCompatActivity {
 
     FocusEditText mFocusEditText;
+    int focunsedCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,14 +27,19 @@ public class FloatingSearchBar extends AppCompatActivity {
             @Override
             public void onFocusChange(final View v, final boolean hasFocus) {
                 // this is the main interesting point, you can extend this with animations.
-                if (v.isFocused()) {
-                    logoLayout.setVisibility(View.GONE);
-                    toolbar.setVisibility(View.GONE);
+                if (focunsedCount == 0) {
+                    focunsedCount++;
+                    if (v.isFocused()) {
+                        logoLayout.setVisibility(View.GONE);
+                        toolbar.setVisibility(View.GONE);
 
 
+                    } else {
+                        logoLayout.setVisibility(View.VISIBLE);
+                        toolbar.setVisibility(View.VISIBLE);
+                    }
                 } else {
-                    logoLayout.setVisibility(View.VISIBLE);
-                    toolbar.setVisibility(View.VISIBLE);
+                    focunsedCount = 0;
                 }
             }
         });
