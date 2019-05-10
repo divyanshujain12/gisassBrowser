@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -68,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
 
 
     ViewInTabViewModel viewInTabViewModel;
-    Tab selectedTab;
     WebViewLayoutBinding webViewLayoutBinding;
 
     private static String SELECTED_ICON_URL = "selected_icon_url";
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
                                       @NonNull final View view, @NonNull final Tab tab,
                                       final int index, final int viewType,
                                       @Nullable final Bundle savedInstanceState) {
-            if (viewType == 2) {
+            if (viewType == 10) {
                 State state = new State(tab);
                 tabSwitcher.addTabPreviewListener(state);
 
@@ -176,15 +176,14 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
                     ActivityViewInTabBinding activityViewInTabBinding = DataBindingUtil.bind(view);
                     activityViewInTabBinding.setViewModel(viewInTabViewModel);
                     viewInTabViewModel.init();
+                    onIconSelect();
                     break;
                 case 2:
+                    webViewLayoutBinding = null;
                     view = inflater.inflate(R.layout.web_view_layout, parent, false);
                     webViewLayoutBinding = DataBindingUtil.bind(view);
                     break;
             }
-
-
-            onIconSelect();
 
             Toolbar toolbar = view.findViewById(R.id.toolbar);
             toolbar.inflateMenu(R.menu.tab);
@@ -202,25 +201,30 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
                               @Nullable final Bundle savedInstanceState) {
             switch (viewType) {
                 case 1:
-                    onIconSelect();
+
+
                     break;
                 case 2:
-                    if (selectedTab == null) {
-                        selectedTab = tab;
-                    }
-                    webViewLayoutBinding.contentLoadingPB.setMax(100);
+
+                    if (savedInstanceState == null)
+                        webViewLayoutBinding.toolbarET.setText(null);
+
+                    ProgressBar contentLoadingPB = findViewById(R.id.contentLoadingPB);
+                    FrameLayout webViewContainer = findViewById(R.id.webViewContainer);
+                    contentLoadingPB.setVisibility(View.GONE);
+                    contentLoadingPB.setMax(100);
                     WebView webView = tab.getWebView();
                     if (webView == null) {
                         webView = settingWebView(tab);
                     }
 
-
                     FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
                     if (webView.getParent() != null) {
                         ((ViewGroup) webView.getParent()).removeView(webView); // <- fix
                     }
-                    webViewLayoutBinding.webViewContainer.removeAllViews();
-                    webViewLayoutBinding.webViewContainer.addView(webView, layoutParams);
+                    webViewContainer.removeAllViews();
+                    webViewContainer.addView(webView, 0, layoutParams);
+
                     break;
             }
 
@@ -241,40 +245,6 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
     }
 
 
-    public class CustomTabSwitcher implements TabSwitcherListener {
-
-        @Override
-        public void onSwitcherShown(@NonNull TabSwitcher tabSwitcher) {
-
-        }
-
-        @Override
-        public void onSwitcherHidden(@NonNull TabSwitcher tabSwitcher) {
-
-        }
-
-        @Override
-        public void onSelectionChanged(@NonNull TabSwitcher tabSwitcher, int selectedTabIndex, @Nullable Tab selectedTab) {
-            MainActivity.this.selectedTab = selectedTab;
-        }
-
-        @Override
-        public void onTabAdded(@NonNull TabSwitcher tabSwitcher, int index, @NonNull Tab tab, @NonNull Animation animation) {
-
-        }
-
-        @Override
-        public void onTabRemoved(@NonNull TabSwitcher tabSwitcher, int index, @NonNull Tab tab, @NonNull Animation animation) {
-
-        }
-
-        @Override
-        public void onAllTabsRemoved(@NonNull TabSwitcher tabSwitcher, @NonNull Tab[] tabs, @NonNull Animation animation) {
-
-        }
-    }
-
-
     @NotNull
     private WebView settingWebView(@NonNull Tab tab) {
         WebView webView;
@@ -283,9 +253,9 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
         WebSettings set = webView.getSettings();
         set.setJavaScriptEnabled(true);
         set.setBuiltInZoomControls(true);
-        loadUrlToWebview(tab.getParameters().getString(SELECTED_ICON_URL), webView);
         webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         webView.setWebChromeClient(new CustomWebChromeClient());
+        loadUrlToWebview(tab.getParameters().getString(SELECTED_ICON_URL), webView);
         tab.setWebView(webView);
         return webView;
     }
@@ -295,6 +265,7 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
+            webViewLayoutBinding.toolbarET.setText(url);
             webViewLayoutBinding.contentLoadingPB.setVisibility(View.VISIBLE);
 
         }
@@ -684,7 +655,7 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
         tabSwitcher.setDecorator(decorator);
         tabSwitcher.addListener(this);
         tabSwitcher.showToolbars(true);
-        tabSwitcher.addListener(new CustomTabSwitcher());
+
         for (int i = 0; i < TAB_COUNT; i++) {
             tabSwitcher.addTab(createTab(i, "", 1));
         }
@@ -697,10 +668,13 @@ public class MainActivity extends AppCompatActivity implements TabSwitcherListen
 
     @Override
     public void onBackPressed() {
-
-        WebView currentWebView = selectedTab.getWebView();
-        if (currentWebView.canGoBack()) {
-            currentWebView.goBack();
+        if (tabSwitcher.getSelectedTab() != null) {
+            WebView currentWebView = tabSwitcher.getSelectedTab().getWebView();
+            if (currentWebView != null && currentWebView.canGoBack()) {
+                currentWebView.goBack();
+            } else {
+                super.onBackPressed();
+            }
         } else {
             super.onBackPressed();
         }
