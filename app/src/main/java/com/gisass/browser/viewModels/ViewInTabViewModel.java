@@ -6,7 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.gisass.browser.R;
 import com.gisass.browser.adapters.ViewInTabAdapter;
+import com.gisass.browser.customViews.CustomDialogs;
+import com.gisass.browser.globalClass.MyApp;
 
 import java.util.ArrayList;
 
@@ -19,6 +22,14 @@ public class ViewInTabViewModel extends AndroidViewModel {
     private NewsViewModel newsViewModel;
     private ViewInTabAdapter viewInTabAdapter;
     private MutableLiveData<String> url;
+    private String[] bottomSheetUrls;
+
+
+    public MutableLiveData<String> getBottomSheetItemClick() {
+        return bottomSheetItemClick;
+    }
+
+    private MutableLiveData<String> bottomSheetItemClick;
 
     public ViewInTabViewModel(@NonNull Application application) {
         super(application);
@@ -27,6 +38,8 @@ public class ViewInTabViewModel extends AndroidViewModel {
     public void init() {
         dataArray = new ArrayList<>();
         url = new MutableLiveData<>();
+        bottomSheetItemClick = new MutableLiveData<>();
+        bottomSheetUrls = getApplication().getResources().getStringArray(R.array.bottom_sheet_items);
         viewInTabAdapter = new ViewInTabAdapter(this);
         initAllViewModel();
         getAllModels();
@@ -96,6 +109,27 @@ public class ViewInTabViewModel extends AndroidViewModel {
         dataArray.add("News");
         dataArray.add(newsViewModel.getNewsModels());
         viewInTabAdapter.notifyDataSetChanged();
+    }
+
+    public void onBottomSheetClick(int index) {
+        switch (index) {
+            case 0:
+                CustomDialogs.getInstance().getAdvertisementPopup(((MyApp) getApplication()).getCurrentActivity(), bottomSheetItemClick);
+                break;
+            case 1:
+                bottomSheetItemClick.postValue(bottomSheetUrls[1]);
+                break;
+            case 2:
+
+                break;
+            case 3:
+                bottomSheetItemClick.postValue(bottomSheetUrls[3]);
+                break;
+            case 4:
+                bottomSheetItemClick.postValue(bottomSheetUrls[4]);
+                break;
+
+        }
     }
 
 }

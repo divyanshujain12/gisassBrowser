@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item
+        android:id="@+id/nav_home"
+        android:title="@string/menu_home"
+        android:titleCondensed="null" />
+
+    <item
+        android:id="@+id/nav_buzzmate"
+        android:title="@string/buzzmate"
+        android:titleCondensed="@string/http_buzzmate_gisass_com" />
+
+    <item
+        android:id="@+id/nav_paymate"
+        android:title="@string/paymate"
+        android:titleCondensed="@string/http_paymate_gisass_com" />
+
+    <item
+        android:id="@+id/nav_ad"
+        android:title="@string/advertisements"
+        android:titleCondensed="@string/http_advertisement_gisass_com" />
+
+    <item
+        android:id="@+id/nav_mail"
+        android:title="@string/gic_mail"
+        android:titleCondensed="@string/http_gicmail_gisass_com" />
+
+    <item
+        android:id="@+id/nav_profile"
+        android:title="@string/e_profile"
+        android:titleCondensed="@string/http_expodian_gisass_com" />
+
+    <item
+        android:id="@+id/nav_Emblem_makers"
+        android:title="@string/emblem_makers"
+        android:titleCondensed="@string/http_emblem_maker_gisass_com" />
+
+    <item
+        android:id="@+id/nav_grow_with_us"
+        android:title="@string/grow_with_us"
+        android:titleCondensed="@string/http_grow_with_us_gisass_com" />
+
+    <item
+        android:id="@+id/nav_g_news"
+        android:title="@string/g_news"
+        android:titleCondensed="@string/http_pegon_news_gisass_com" />
+
+    <item
+        android:id="@+id/nav_weblog"
+        android:title="@string/weblog"
+        android:titleCondensed="@string/http_weblog_gisass_com" />
+
+    <item
+        android:id="@+id/nav_boxwis_forum"
+        android:title="@string/boxwis_forum"
+        android:titleCondensed="@string/http_boxwis_gisass_com" />
+
+    <item
+        android:id="@+id/nav_pvt_jobs"
+        android:title="@string/pvt_jobs_gwirk"
+        android:titleCondensed="@string/http_gwirk_gisass_com" />
+
+    <item
+        android:id="@+id/nav_govt_jobs"
+        android:title="@string/government_jobs"
+        android:titleCondensed="@string/http_government_job_gisass_com" />
+
+    <item
+        android:id="@+id/nav_gstore"
+        android:title="@string/gstore"
+        android:titleCondensed="@string/http_gstore_gisass_com" />
+
+    <item
+        android:id="@+id/nav_empower"
+        android:title="@string/empower"
+        android:titleCondensed="@string/http_empower_gisass_com" />
+
+    <item
+        android:id="@+id/nav_social_media"
+        android:title="@string/social_media"
+        android:titleCondensed="@string/http_hiiwey_gisass_com" />
+
+    <item
+        android:id="@+id/nav_it_services"
+        android:title="@string/it_development_services"
+        android:titleCondensed="@string/http_gicsoftware_com" />
+
+    <item
+        android:id="@+id/nav_add_business"
+        android:title="@string/add_business"
+        android:titleCondensed="@string/http_addweburl_gisass_com" />
+
+    <item
+        android:id="@+id/nav_photos"
+        android:title="@string/photos"
+        android:titleCondensed="@string/http_cataphote_gisass_com" />
+
+    <item
+        android:id="@+id/nav_my_business"
+        android:title="@string/my_business"
+        android:titleCondensed="@string/http_my_business_gisass_com" />
+
+    <item
+        android:id="@+id/nav_login_signup"
+        android:title="@string/login_signup"
+        android:titleCondensed="@string/http_login_gisass_com" />
+
+
+</menu>

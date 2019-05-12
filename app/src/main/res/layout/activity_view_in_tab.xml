@@ -96,7 +96,9 @@
 
         </androidx.core.widget.NestedScrollView>
 
-        <include layout="@layout/bottom_sheet" />
+        <include
+            layout="@layout/bottom_sheet"
+            app:viewModel="@{viewModel}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

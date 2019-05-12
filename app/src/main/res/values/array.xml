@@ -15,4 +15,20 @@
         <item>https://www.cricbuzz.com/</item>
     </string-array>
 
+    <string-array name="advertisement_ads">
+        <item>http://buzzmate.gisass.com/</item>
+        <item>http://advertisement.gisass.com/</item>
+        <item>http://advertisement.gisass.com/</item>
+    </string-array>
+
+    <string-array name="bottom_sheet_items">
+        <item></item>
+        <item>http://my-business.gisass.com/ </item>
+        <item></item>
+        <item>http://login.gisass.com/</item>
+        <item>http://gisass.com/donation</item>
+    </string-array>
+
+    <string-array name="sliding_drawer_items"></string-array>
+
 </resources>

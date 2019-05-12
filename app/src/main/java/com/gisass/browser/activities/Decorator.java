@@ -60,6 +60,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                 activityViewInTabBinding.setViewModel(viewInTabViewModel);
                 viewInTabViewModel.init();
                 onIconSelect();
+                registerBottomSheetIconClick();
                 break;
             case 2:
 
@@ -163,6 +164,15 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         });
     }
 
+    private void registerBottomSheetIconClick() {
+        viewInTabViewModel.getBottomSheetItemClick().observe(mainActivity, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                tabSwitcher.addTab(TabUtils.getInstance().createTab(tabSwitcher.getCount(), s, 2), 0, TabUtils.getInstance().createRevealAnimation(tabSwitcher));
+            }
+        });
+    }
+
     class WebClient extends WebViewClient {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -189,4 +199,6 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         }
 
     }
+
+
 }
