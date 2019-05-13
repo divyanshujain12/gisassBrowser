@@ -12,49 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/toolbarFL"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_constraintBottom_toTopOf="@id/container"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@android:id/title"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:ellipsize="marquee"
-                android:gravity="center_vertical"
-                android:singleLine="true"
-                android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
-                android:visibility="gone" />
-
-            <de.mrapp.android.util.view.UnfocusableToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:focusable="false"
-                android:theme="?attr/toolbarTheme"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-                <com.gisass.browser.customFontViews.CustomEditTextRegular
-                    android:id="@+id/toolbarET"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_corner"
-                    android:drawableEnd="@drawable/ic_search_black_24dp"
-                    android:drawableRight="@drawable/ic_search_black_24dp"
-                    android:hint="@string/search"
-                    android:singleLine="true"
-                    android:padding="@dimen/ten_dp"
-                    android:visibility="visible" />
-
-            </de.mrapp.android.util.view.UnfocusableToolbar>
-
-        </FrameLayout>
 
         <RelativeLayout
             android:id="@+id/container"
@@ -63,7 +21,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbarFL">
+            >
 
 
             <ProgressBar

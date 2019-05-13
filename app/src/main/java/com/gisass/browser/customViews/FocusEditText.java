@@ -9,10 +9,12 @@ import android.widget.EditText;
 
 import androidx.appcompat.widget.AppCompatEditText;
 
+import com.gisass.browser.customFontViews.CustomEditTextRegular;
+
 /**
  * Created by Oren on 11/11/2015.
  */
-public class FocusEditText extends AppCompatEditText {
+public class FocusEditText extends CustomEditTextRegular {
     public FocusEditText(final Context context)
     {
         super(context);

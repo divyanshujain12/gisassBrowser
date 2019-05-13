@@ -3,20 +3,27 @@ package com.gisass.browser.activities;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -24,7 +31,9 @@ import androidx.lifecycle.ViewModelProviders;
 import com.gisass.browser.R;
 import com.gisass.browser.customFontViews.CustomEditTextRegular;
 import com.gisass.browser.databinding.ActivityViewInTabBinding;
+import com.gisass.browser.utils.KeyboardUtils;
 import com.gisass.browser.utils.TabUtils;
+import com.gisass.browser.utils.Utils;
 import com.gisass.browser.viewModels.ViewInTabViewModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +48,9 @@ public class Decorator extends StatefulTabSwitcherDecorator {
     ViewInTabViewModel viewInTabViewModel;
     ProgressBar contentLoadingPB;
     CustomEditTextRegular toolbarET;
+    ConstraintLayout typeOne, typeTwo;
+    FrameLayout webViewContainer;
+
     private static final String VIEW_TYPE_EXTRA = MainActivity.class.getName() + "::ViewType";
     private static String SELECTED_ICON_URL = "selected_icon_url";
 
@@ -79,33 +91,45 @@ public class Decorator extends StatefulTabSwitcherDecorator {
 
     @Override
     protected void onShowTab(@NonNull Context context, @NonNull TabSwitcher tabSwitcher, @NonNull View view, @NonNull Tab tab, int index, int viewType, @Nullable Object state, @Nullable Bundle savedInstanceState) {
-        switch (viewType) {
-
-            case 2:
-                toolbarET = view.findViewById(R.id.toolbarET);
-                if (savedInstanceState == null)
-                    toolbarET.setText(null);
-
-                contentLoadingPB = view.findViewById(R.id.contentLoadingPB);
-                FrameLayout webViewContainer = view.findViewById(R.id.webViewContainer);
-                contentLoadingPB.setVisibility(View.GONE);
-                contentLoadingPB.setMax(100);
-                WebView webView = tab.getWebView();
-                if (webView == null) {
-                    webView = settingWebView(tab);
-                }
-
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-                if (webView.getParent() != null) {
-                    ((ViewGroup) webView.getParent()).removeView(webView); // <- fix
-                }
-                webViewContainer.removeAllViews();
-                webViewContainer.addView(webView, 0, layoutParams);
-
-                break;
+        String url = tab.getParameters().getString(SELECTED_ICON_URL);
+        initViews(view, savedInstanceState);
+        registerKeyboardVisible();
+        registerOnImeOptionClick();
+        view.findViewById(R.id.externalET).setOnClickListener(new CustomViewClick());
+        if (url != null && !url.equals("")) {
+            showTypeTwo(true);
+            setupTabForWebView(tab, url);
+        } else {
+            showTypeTwo(false);
         }
+    }
 
+    private void initViews(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        typeOne = view.findViewById(R.id.typeOne);
+        typeTwo = view.findViewById(R.id.typeTwo);
+        toolbarET = view.findViewById(R.id.toolbarET);
+        contentLoadingPB = view.findViewById(R.id.contentLoadingPB);
+        webViewContainer = view.findViewById(R.id.webViewContainer);
+        if (savedInstanceState == null) {
+            toolbarET.setText(null);
+        }
+        contentLoadingPB.setVisibility(View.GONE);
+        contentLoadingPB.setMax(100);
+    }
 
+    private void setupTabForWebView(@NonNull Tab tab, String url) {
+        WebView webView = tab.getWebView();
+        if (webView == null) {
+            webView = settingWebView(url);
+            webView.setTransitionGroup(true);
+            tab.setWebView(webView);
+        }
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+        if (webView.getParent() != null) {
+            ((ViewGroup) webView.getParent()).removeView(webView); // <- fix
+        }
+        webViewContainer.removeAllViews();
+        webViewContainer.addView(webView, 0, layoutParams);
     }
 
     @Override
@@ -126,7 +150,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
     }
 
     @NotNull
-    private WebView settingWebView(@NonNull Tab tab) {
+    private WebView settingWebView(@NonNull String url) {
         WebView webView;
         webView = new WebView(mainActivity);
         webView.setWebViewClient(new WebClient());
@@ -141,15 +165,15 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         webSettings.setPluginState(WebSettings.PluginState.ON);
 
         webView.setWebChromeClient(new CustomWebChromeClient());
-        String url = tab.getParameters().getString(SELECTED_ICON_URL);
-        toolbarET.setText(url);
-        loadUrlToWebview(url, webView);
 
-        tab.setWebView(webView);
+        toolbarET.setText(url);
+        loadUrlToWebView(url, webView);
+
+
         return webView;
     }
 
-    private void loadUrlToWebview(String url, WebView webView) {
+    private void loadUrlToWebView(String url, WebView webView) {
         if (url != null && !url.equals("")) {
             webView.loadUrl(url);
         }
@@ -159,7 +183,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         viewInTabViewModel.getUrl().observe(mainActivity, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                tabSwitcher.addTab(TabUtils.getInstance().createTab(tabSwitcher.getCount(), s, 2), 0, TabUtils.getInstance().createRevealAnimation(tabSwitcher));
+                tabSwitcher.addTab(TabUtils.getInstance().createTab(tabSwitcher.getCount(), s, 1), 0, TabUtils.getInstance().createRevealAnimation(tabSwitcher));
             }
         });
     }
@@ -168,9 +192,15 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         viewInTabViewModel.getBottomSheetItemClick().observe(mainActivity, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                tabSwitcher.addTab(TabUtils.getInstance().createTab(tabSwitcher.getCount(), s, 2), 0, TabUtils.getInstance().createRevealAnimation(tabSwitcher));
+                tabSwitcher.addTab(TabUtils.getInstance().createTab(tabSwitcher.getCount(), s, 1), 0, TabUtils.getInstance().createRevealAnimation(tabSwitcher));
             }
         });
+    }
+
+    public void showTypeTwo(boolean show) {
+        typeOne.setVisibility(show ? View.GONE : View.VISIBLE);
+        typeTwo.setVisibility(show ? View.VISIBLE : View.GONE);
+        toolbarET.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     class WebClient extends WebViewClient {
@@ -182,23 +212,73 @@ public class Decorator extends StatefulTabSwitcherDecorator {
 
         }
 
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            contentLoadingPB.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+            super.onReceivedError(view, request, error);
+            contentLoadingPB.setVisibility(View.GONE);
+        }
+
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.loadUrl(url);
             return true;
         }
     }
 
-
     private class CustomWebChromeClient extends WebChromeClient {
         @Override
         public void onProgressChanged(WebView view, int progress) {
             contentLoadingPB.setProgress(progress);
-            if (progress == 100) {
-                contentLoadingPB.setVisibility(View.GONE);
-            }
         }
 
     }
 
+    private class CustomViewClick implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            showTypeTwo(true);
+            toolbarET.requestFocus();
+        }
+    }
 
+    private void registerKeyboardVisible() {
+        KeyboardUtils.addKeyboardToggleListener(mainActivity, new KeyboardUtils.SoftKeyboardToggleListener() {
+            @Override
+            public void onToggleSoftKeyboard(boolean isVisible) {
+                if (!isVisible) {
+                    String toolbarETUrl = toolbarET.getText().toString();
+                    if (toolbarETUrl.equals("")) {
+                        showTypeTwo(false);
+                    } else {
+                        showTypeTwo(true);
+                    }
+                }
+            }
+        });
+    }
+
+    private void registerOnImeOptionClick() {
+        toolbarET.setOnEditorActionListener(new CustomEditTextRegular.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    String formattedUrl = Utils.getInstance().getFormattedUrlString(toolbarET.getText().toString().replaceAll(" ", ""));
+                    if (URLUtil.isValidUrl(formattedUrl)) {
+                        tabSwitcher.getSelectedTab().getParameters().putString(SELECTED_ICON_URL, formattedUrl);
+                        toolbarET.setText(formattedUrl);
+                        setupTabForWebView(tabSwitcher.getSelectedTab(), formattedUrl);
+                        KeyboardUtils.forceCloseKeyboard(toolbarET);
+                    }
+                    //Uri uri = Uri.parse(toolbarET.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
 }

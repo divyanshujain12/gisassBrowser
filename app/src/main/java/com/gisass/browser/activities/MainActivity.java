@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected final void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         setContentView(R.layout.activity_main);
 
         ((MyApp) getApplication()).setCurrentActivity(this);
@@ -113,9 +112,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         CharSequence condensedTitle = item.getTitleCondensed();
 
-        if (condensedTitle != null) {
+        if (condensedTitle != null && !condensedTitle.equals("null")) {
             String url = condensedTitle.toString();
             tabSwitcher.addTab(TabUtils.getInstance().createTab(tabSwitcher.getCount(), url, 2), 0, TabUtils.getInstance().createRevealAnimation(tabSwitcher));
+        } else {
+            //tabSwitcher.getSelectedTab().getParameters().putInt(TabUtils.VIEW_TYPE_EXTRA, 1);
+            tabSwitcher.getSelectedTab().getParameters().putString(TabUtils.SELECTED_ICON_URL, "");
+            decorator.showTypeTwo(false);
+            //tabSwitcher.notifyTabChanged(tabSwitcher.getSelectedTab());
         }
 
 
