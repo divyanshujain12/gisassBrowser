@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:actionButtonStyle">@style/ActionButtonStyle</item>
     </style>
 
     <style name="AppTheme.Dark" parent="@style/Theme.AppCompat.NoActionBar">
@@ -56,5 +57,11 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ActionButtonStyle" parent="@android:style/Widget.Holo.Light.ActionButton">
+        <item name="android:minWidth">40dip</item>
+        <item name="android:paddingLeft">40dip</item>
+        <item name="android:paddingRight">40dip</item>
+    </style>
 
 </resources>

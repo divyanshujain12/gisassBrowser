@@ -100,11 +100,8 @@ public class ViewInTabViewModel extends AndroidViewModel {
     }
 
     private void getAllModels() {
-        dataArray.add("Social");
         dataArray.add(staticIconViewModel.getStaticIconModels());
-        dataArray.add("Education And Jobs");
         dataArray.add(gridIconWithBackgroundViewModel.getStaticIconModels());
-        dataArray.add("App Setting");
         dataArray.add(appSettingViewModel.getAppSettingModels());
         dataArray.add("News");
         dataArray.add(newsViewModel.getNewsModels());
