@@ -1,8 +1,7 @@
 package com.gisass.browser.utils;
 
 import android.app.Activity;
-import android.content.Context;
-import android.view.inputmethod.InputMethodManager;
+import android.view.Menu;
 
 public class Utils {
     private static final Utils ourInstance = new Utils();
@@ -25,5 +24,11 @@ public class Utils {
         return url;
     }
 
+    public void showToolbarItems(Menu menu, boolean show, Activity activity) {
+        activity.invalidateOptionsMenu();
+        for (int i = 0; i < menu.size(); i++) {
+            menu.getItem(i).setVisible(show);
+        }
 
+    }
 }

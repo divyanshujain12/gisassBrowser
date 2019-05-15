@@ -29,6 +29,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.gisass.browser.R;
+import com.gisass.browser.animations.ResizeWidthAnimation;
 import com.gisass.browser.customFontViews.CustomEditTextRegular;
 import com.gisass.browser.databinding.ActivityViewInTabBinding;
 import com.gisass.browser.utils.KeyboardUtils;
@@ -38,6 +39,8 @@ import com.gisass.browser.viewModels.ViewInTabViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 import de.mrapp.android.tabswitcher.StatefulTabSwitcherDecorator;
 import de.mrapp.android.tabswitcher.Tab;
 import de.mrapp.android.tabswitcher.TabSwitcher;
@@ -45,11 +48,13 @@ import de.mrapp.android.tabswitcher.TabSwitcher;
 public class Decorator extends StatefulTabSwitcherDecorator {
     private MainActivity mainActivity;
     private TabSwitcher tabSwitcher;
-    ViewInTabViewModel viewInTabViewModel;
-    ProgressBar contentLoadingPB;
-    CustomEditTextRegular toolbarET;
-    ConstraintLayout typeOne, typeTwo;
-    FrameLayout webViewContainer;
+    private ViewInTabViewModel viewInTabViewModel;
+    private ProgressBar contentLoadingPB;
+    private CustomEditTextRegular toolbarET;
+    private ConstraintLayout typeOne, typeTwo;
+    private FrameLayout webViewContainer;
+    private Menu menu;
+    private int toolbarETInitialWidth = 0;
 
     private static final String VIEW_TYPE_EXTRA = MainActivity.class.getName() + "::ViewType";
     private static String SELECTED_ICON_URL = "selected_icon_url";
@@ -84,7 +89,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.tab);
         toolbar.setOnMenuItemClickListener(TabUtils.getInstance().createToolbarMenuListener(tabSwitcher));
-        Menu menu = toolbar.getMenu();
+        menu = toolbar.getMenu();
         TabSwitcher.setupWithMenu(tabSwitcher, menu, TabUtils.getInstance().createTabSwitcherButtonListener(tabSwitcher));
         return view;
     }
@@ -251,15 +256,39 @@ public class Decorator extends StatefulTabSwitcherDecorator {
             @Override
             public void onToggleSoftKeyboard(boolean isVisible) {
                 if (!isVisible) {
-                    String toolbarETUrl = toolbarET.getText().toString();
-                    if (toolbarETUrl.equals("")) {
-                        showTypeTwo(false);
-                    } else {
-                        showTypeTwo(true);
-                    }
+                    onKeyboardHide();
+                } else {
+
+                    onKeyboardShow();
+//
                 }
             }
         });
+    }
+
+    private void onKeyboardHide() {
+        animateToolbarET(toolbarETInitialWidth);
+        Utils.getInstance().showToolbarItems(menu, true, mainActivity);
+        String toolbarETUrl = Objects.requireNonNull(toolbarET.getText()).toString();
+        if (toolbarETUrl.equals("")) {
+            showTypeTwo(false);
+        } else {
+            showTypeTwo(true);
+        }
+    }
+
+    private void onKeyboardShow() {
+        Utils.getInstance().showToolbarItems(menu, false, mainActivity);
+        toolbarETInitialWidth = toolbarET.getWidth();
+        animateToolbarET(((View) toolbarET.getParent()).getWidth() - 80);
+    }
+
+    private void animateToolbarET(int desiredWith) {
+        if (desiredWith > 0) {
+            ResizeWidthAnimation resizeWidthAnimation = new ResizeWidthAnimation(toolbarET, desiredWith);
+            resizeWidthAnimation.setDuration(200);
+            toolbarET.startAnimation(resizeWidthAnimation);
+        }
     }
 
     private void registerOnImeOptionClick() {
@@ -274,7 +303,6 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                         setupTabForWebView(tabSwitcher.getSelectedTab(), formattedUrl);
                         KeyboardUtils.forceCloseKeyboard(toolbarET);
                     }
-                    //Uri uri = Uri.parse(toolbarET.getText().toString());
                     return true;
                 }
                 return false;
