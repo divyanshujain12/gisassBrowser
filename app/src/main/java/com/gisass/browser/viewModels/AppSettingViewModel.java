@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class AppSettingViewModel extends ViewModel {
 
     private String[] appNames = {"Share", "Rating", "Users", "SPoints"};
-    private int[] appIcons = {R.drawable.share, R.drawable.rate, R.drawable.user, R.drawable.starsport};
+    private int[] appIcons = {R.drawable.share, R.drawable.rate, R.drawable.user, R.drawable.spoints};
     private ArrayList<AppSettingModel> appSettingModels;
     private AppSettingAdapter appSettingAdapter;
 
