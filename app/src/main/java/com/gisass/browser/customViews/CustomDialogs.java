@@ -2,7 +2,9 @@ package com.gisass.browser.customViews;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.MutableLiveData;
@@ -59,5 +61,23 @@ public class CustomDialogs {
         alertDialog.show();
 
         return url;
+    }
+
+    public MutableLiveData<Integer> getAdPopup(Context context, View anchorView, int menu) {
+
+        final MutableLiveData<Integer> liveData = new MutableLiveData<>();
+
+        PopupMenu popupMenu = new PopupMenu(context, anchorView);
+        popupMenu.getMenuInflater().inflate(menu, popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                liveData.postValue(item.getItemId());
+                return false;
+            }
+        });
+        popupMenu.show();
+        return liveData;
     }
 }

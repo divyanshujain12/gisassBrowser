@@ -77,5 +77,6 @@
     <string name="http_addweburl_gisass_com">http://addweburl.gisass.com/</string>
     <string name="http_cataphote_gisass_com">http://cataphote.gisass.com/</string>
     <string name="http_my_business_gisass_com">http://my-business.gisass.com/</string>
+    <string name="gisass_home">http://gisass.com</string>
 
 </resources>

@@ -23,7 +23,11 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.view.View;
 import android.webkit.WebView;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.ColorInt;
@@ -32,6 +36,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.Toolbar;
 
 import de.mrapp.util.Condition;
 import de.mrapp.util.datastructure.ListenerList;
@@ -48,6 +54,14 @@ public class Tab implements Parcelable {
 
     /*Tab with webview*/
 
+
+    private WebView webView;
+    private Toolbar toolbar;
+    private ProgressBar progressBar;
+    private AppCompatEditText toolbarET;
+    private FrameLayout contentContainer;
+    private View typeOne,typeTwo;
+
     public WebView getWebView() {
         return webView;
     }
@@ -56,14 +70,52 @@ public class Tab implements Parcelable {
         this.webView = webView;
     }
 
-    private WebView webView;
-
-    public String getActiveUrl() {
-        return activeUrl;
+    public Toolbar getToolbar() {
+        return toolbar;
     }
 
-    public void setActiveUrl(String activeUrl) {
-        this.activeUrl = activeUrl;
+    public void setToolbar(Toolbar toolbar) {
+        this.toolbar = toolbar;
+    }
+
+    public ProgressBar getProgressBar() {
+        return progressBar;
+    }
+
+    public void setProgressBar(ProgressBar progressBar) {
+        this.progressBar = progressBar;
+    }
+
+    public AppCompatEditText getToolbarET() {
+        return toolbarET;
+    }
+
+    public void setToolbarET(AppCompatEditText toolbarET) {
+        this.toolbarET = toolbarET;
+    }
+
+    public FrameLayout getContentContainer() {
+        return contentContainer;
+    }
+
+    public void setContentContainer(FrameLayout contentContainer) {
+        this.contentContainer = contentContainer;
+    }
+
+    public View getTypeOne() {
+        return typeOne;
+    }
+
+    public void setTypeOne(View typeOne) {
+        this.typeOne = typeOne;
+    }
+
+    public View getTypeTwo() {
+        return typeTwo;
+    }
+
+    public void setTypeTwo(View typeTwo) {
+        this.typeTwo = typeTwo;
     }
 
     private String activeUrl = "";

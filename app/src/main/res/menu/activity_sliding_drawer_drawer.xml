@@ -6,7 +6,7 @@
     <item
         android:id="@+id/nav_home"
         android:title="@string/menu_home"
-        android:titleCondensed="null" />
+        android:titleCondensed="@string/gisass_home" />
 
     <item
         android:id="@+id/nav_buzzmate"

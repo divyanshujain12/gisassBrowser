@@ -41,8 +41,22 @@
                 android:background="@android:color/transparent"
                 android:focusable="false"
                 android:theme="?attr/toolbarTheme"
-                app:contentInsetStartWithNavigation="0dp"
+                android:contentInsetStart="0dp"
+                android:contentInsetLeft="0dp"
+                android:contentInsetEnd="0dp"
+                android:contentInsetRight="0dp"
+                app:contentInsetEnd="0dp"
+                app:contentInsetLeft="0dp"
+                app:contentInsetRight="0dp"
+                app:contentInsetStart="0dp"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/showDrawer"
+                    android:layout_width="@dimen/fourty_dp"
+                    android:layout_height="@dimen/fourty_dp"
+                    android:padding="@dimen/five_dp"
+                    android:src="@drawable/efa" />
 
                 <com.gisass.browser.customViews.FocusEditText
                     android:id="@+id/toolbarET"
@@ -52,6 +66,7 @@
                     android:drawableEnd="@drawable/ic_search_black_24dp"
                     android:hint="@string/search"
                     android:textSize="@dimen/fourteen_sp"
+                    android:layout_marginStart="@dimen/five_dp"
                     android:imeOptions="actionSearch"
                     android:singleLine="true"
                     android:padding="@dimen/five_dp"

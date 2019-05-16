@@ -14,8 +14,8 @@ import java.util.ArrayList;
 
 public class SocialViewModel extends AndroidViewModel {
 
-    private String[] appNames = {"Google", "Facebook", "Instagram", "Youtube", "Amazon", "Flipkart", "Hotstar", "Bookmyshow", "HotVideo", "PlayStore", "Travel", "Cricket"};
-    private int[] appIcons = {R.drawable.google, R.drawable.facebook, R.drawable.instagram, R.drawable.youtube, R.drawable.amazon, R.drawable.flipkart, R.drawable.hotstar, R.drawable.bookmyshow, R.drawable.hotvideos, R.drawable.playstore, R.drawable.booking, R.drawable.cricket};
+    private String[] appNames = {"Google", "Facebook", "Instagram", "Youtube", "Amazon", "Flipkart", "Hotstar", "Bookmyshow", "Property", "PlayStore", "Travel", "Cricket"};
+    private int[] appIcons = {R.drawable.google, R.drawable.facebook, R.drawable.instagram, R.drawable.youtube, R.drawable.amazon, R.drawable.flipkart, R.drawable.hotstar, R.drawable.bookmyshow, R.drawable.property, R.drawable.playstore, R.drawable.booking, R.drawable.cricket};
     private ArrayList<StaticIconModel> staticIconModels;
     private GridLayoutAdapter gridLayoutAdapter;
 

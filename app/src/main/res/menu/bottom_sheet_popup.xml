@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/buzzmateAdMenu"
+        android:title="@string/buzzmate_ads" />
+    <item
+        android:id="@+id/gisassAdMenu"
+        android:title="@string/gisass_advertisement" />
+    <item
+        android:id="@+id/browserAdMenu"
+        android:title="@string/browser_ads" />
+</menu>

@@ -1,12 +1,16 @@
 package com.gisass.browser.viewModels;
 
+import android.app.Activity;
 import android.app.Application;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.gisass.browser.R;
+import com.gisass.browser.activities.MainActivity;
 import com.gisass.browser.adapters.ViewInTabAdapter;
 import com.gisass.browser.customViews.CustomDialogs;
 import com.gisass.browser.globalClass.MyApp;
@@ -108,10 +112,10 @@ public class ViewInTabViewModel extends AndroidViewModel {
         viewInTabAdapter.notifyDataSetChanged();
     }
 
-    public void onBottomSheetClick(int index) {
+    public void onBottomSheetClick(int index, View view) {
         switch (index) {
             case 0:
-                CustomDialogs.getInstance().getAdvertisementPopup(((MyApp) getApplication()).getCurrentActivity(), bottomSheetItemClick);
+                onAdvertisementItemClick(view);
                 break;
             case 1:
                 bottomSheetItemClick.postValue(bottomSheetUrls[1]);
@@ -127,6 +131,28 @@ public class ViewInTabViewModel extends AndroidViewModel {
                 break;
 
         }
+    }
+
+    private void onAdvertisementItemClick(View view) {
+        final Activity activity = ((MyApp) getApplication()).getCurrentActivity();
+        final String[] urls = activity.getResources().getStringArray(R.array.advertisement_ads);
+
+        CustomDialogs.getInstance().getAdPopup(activity, view, R.menu.bottom_sheet_popup).observe((MainActivity) activity, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer s) {
+                switch (s) {
+                    case R.id.buzzmateAdMenu:
+                        bottomSheetItemClick.postValue(urls[0]);
+                        break;
+                    case R.id.gisassAdMenu:
+                        bottomSheetItemClick.postValue(urls[1]);
+                        break;
+                    case R.id.browserAdMenu:
+                        bottomSheetItemClick.postValue(urls[2]);
+                        break;
+                }
+            }
+        });
     }
 
 }

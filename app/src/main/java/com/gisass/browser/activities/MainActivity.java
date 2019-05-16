@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.webkit.WebView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -60,11 +59,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         tabSwitcher = findViewById(R.id.tab_switcher);
         tabSwitcher.clearSavedStatesWhenRemovingTabs(false);
-        decorator = new Decorator(this, tabSwitcher);
+        decorator = new Decorator(this, tabSwitcher,drawer);
         ViewCompat.setOnApplyWindowInsetsListener(tabSwitcher, TabUtils.getInstance().createWindowInsetsListener(tabSwitcher, this));
         tabSwitcher.setDecorator(decorator);
         tabSwitcher.addListener(new CustomTabSwitchListener(this, decorator));
         tabSwitcher.showToolbars(true);
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (condensedTitle != null && !condensedTitle.equals("null")) {
             String url = condensedTitle.toString();
-            tabSwitcher.addTab(TabUtils.getInstance().createTab(tabSwitcher.getCount(), url, 2), 0, TabUtils.getInstance().createRevealAnimation(tabSwitcher));
+            tabSwitcher.addTab(TabUtils.getInstance().createTab(tabSwitcher.getCount(), url, 1), 0, TabUtils.getInstance().createRevealAnimation(tabSwitcher));
         } else {
             //tabSwitcher.getSelectedTab().getParameters().putInt(TabUtils.VIEW_TYPE_EXTRA, 1);
             tabSwitcher.getSelectedTab().getParameters().putString(TabUtils.SELECTED_ICON_URL, "");

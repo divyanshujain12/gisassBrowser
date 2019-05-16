@@ -29,7 +29,7 @@
             android:layout_weight="1"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="@{()->viewModel.onBottomSheetClick(0)}"
+            android:onClick="@{(v)->viewModel.onBottomSheetClick(0,v)}"
             
             android:src="@drawable/ic_airplay_black_24dp" />
 
@@ -39,7 +39,7 @@
             android:layout_weight="1"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="@{()->viewModel.onBottomSheetClick(1)}"
+            android:onClick="@{(v)->viewModel.onBottomSheetClick(1,v)}"
             
             android:src="@drawable/ic_book_black_24dp" />
 
@@ -47,7 +47,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="@{()->viewModel.onBottomSheetClick(2)}"
+            android:onClick="@{(v)->viewModel.onBottomSheetClick(2,v)}"
             
             android:src="@drawable/ic_filter_b_and_w_black_24dp" />
 
@@ -55,7 +55,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="@{()->viewModel.onBottomSheetClick(3)}"
+            android:onClick="@{(v)->viewModel.onBottomSheetClick(3,v)}"
             
             android:src="@drawable/ic_account_box_black_24dp" />
 
@@ -63,7 +63,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="@{()->viewModel.onBottomSheetClick(4)}"
+            android:onClick="@{(v)->viewModel.onBottomSheetClick(4,v)}"
             
             android:src="@drawable/ic_monetization_on_black_24dp" />
 

@@ -3,6 +3,7 @@ package com.gisass.browser.activities;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,6 +26,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -55,13 +57,17 @@ public class Decorator extends StatefulTabSwitcherDecorator {
     private FrameLayout webViewContainer;
     private Menu menu;
     private int toolbarETInitialWidth = 0;
+    private View showDrawerIV;
 
     private static final String VIEW_TYPE_EXTRA = MainActivity.class.getName() + "::ViewType";
     private static String SELECTED_ICON_URL = "selected_icon_url";
+    private DrawerLayout drawerLayout;
 
-    public Decorator(MainActivity mainActivity, TabSwitcher tabSwitcher) {
+    public Decorator(MainActivity mainActivity, TabSwitcher tabSwitcher, DrawerLayout drawerLayout) {
         this.mainActivity = mainActivity;
         this.tabSwitcher = tabSwitcher;
+        this.drawerLayout = drawerLayout;
+        registerKeyboardVisible();
     }
 
     @NonNull
@@ -87,10 +93,12 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         }
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        toolbar.inflateMenu(R.menu.tab);
-        toolbar.setOnMenuItemClickListener(TabUtils.getInstance().createToolbarMenuListener(tabSwitcher));
-        menu = toolbar.getMenu();
-        TabSwitcher.setupWithMenu(tabSwitcher, menu, TabUtils.getInstance().createTabSwitcherButtonListener(tabSwitcher));
+        if (toolbar != null) {
+            toolbar.inflateMenu(R.menu.tab);
+            toolbar.setOnMenuItemClickListener(TabUtils.getInstance().createToolbarMenuListener(tabSwitcher));
+            menu = toolbar.getMenu();
+            TabSwitcher.setupWithMenu(tabSwitcher, menu, TabUtils.getInstance().createTabSwitcherButtonListener(tabSwitcher));
+        }
         return view;
     }
 
@@ -98,13 +106,13 @@ public class Decorator extends StatefulTabSwitcherDecorator {
     protected void onShowTab(@NonNull Context context, @NonNull TabSwitcher tabSwitcher, @NonNull View view, @NonNull Tab tab, int index, int viewType, @Nullable Object state, @Nullable Bundle savedInstanceState) {
         String url = tab.getParameters().getString(SELECTED_ICON_URL);
         initViews(view, savedInstanceState);
-        registerKeyboardVisible();
         registerOnImeOptionClick();
-        view.findViewById(R.id.externalET).setOnClickListener(new CustomViewClick());
         if (url != null && !url.equals("")) {
             showTypeTwo(true);
             setupTabForWebView(tab, url);
         } else {
+            webViewContainer.removeAllViews();
+
             showTypeTwo(false);
         }
     }
@@ -120,6 +128,11 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         }
         contentLoadingPB.setVisibility(View.GONE);
         contentLoadingPB.setMax(100);
+        view.findViewById(R.id.externalET).setOnClickListener(new CustomViewClick());
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        menu = toolbar.getMenu();
+        showDrawerIV = view.findViewById(R.id.showDrawer);
+        showDrawerIV.setOnClickListener(new CustomViewClick());
     }
 
     private void setupTabForWebView(@NonNull Tab tab, String url) {
@@ -206,6 +219,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         typeOne.setVisibility(show ? View.GONE : View.VISIBLE);
         typeTwo.setVisibility(show ? View.VISIBLE : View.GONE);
         toolbarET.setVisibility(show ? View.VISIBLE : View.GONE);
+        showDrawerIV.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
     class WebClient extends WebViewClient {
@@ -246,8 +260,16 @@ public class Decorator extends StatefulTabSwitcherDecorator {
     private class CustomViewClick implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            showTypeTwo(true);
-            toolbarET.requestFocus();
+            switch (v.getId()) {
+                case R.id.externalET:
+                    showTypeTwo(true);
+                    toolbarET.requestFocus();
+                    break;
+                case R.id.showDrawer:
+                    drawerLayout.openDrawer(Gravity.LEFT, true);
+                    break;
+            }
+
         }
     }
 
@@ -255,12 +277,14 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         KeyboardUtils.addKeyboardToggleListener(mainActivity, new KeyboardUtils.SoftKeyboardToggleListener() {
             @Override
             public void onToggleSoftKeyboard(boolean isVisible) {
-                if (!isVisible) {
-                    onKeyboardHide();
-                } else {
+                if (toolbarET != null) {
+                    if (!isVisible) {
+                        onKeyboardHide();
+                    } else {
 
-                    onKeyboardShow();
+                        onKeyboardShow();
 //
+                    }
                 }
             }
         });

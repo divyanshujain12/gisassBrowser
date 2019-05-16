@@ -53,6 +53,7 @@ public class TabUtils {
 
     @NonNull
     public Toolbar.OnMenuItemClickListener createToolbarMenuListener(final TabSwitcher tabSwitcher) {
+
         return new Toolbar.OnMenuItemClickListener() {
 
             @Override
@@ -63,6 +64,7 @@ public class TabUtils {
 
                         if (selectedTab != null) {
                             tabSwitcher.removeTab(selectedTab);
+                            tabSwitcher.clearSavedState(selectedTab);
                         }
 
                         return true;
