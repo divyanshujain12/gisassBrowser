@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout>
 
     <data>
 
         <variable
             name="viewModel"
-            type="com.gisass.browser.viewModels.EducationAndJobViewModel" />
+            type="com.gisass.browser.viewModels.JobViewModel" />
     </data>
 
+
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/twenty_five_dp"
-        android:layout_marginBottom="@dimen/twenty_five_dp"
-        tools:context=".activities.GridRecyclerViewActivity">
+        android:layout_height="match_parent"
+        tools:context=".activities.EducationActivity">
+
+        <include layout="@layout/tab_header" />
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listOfBreeds"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:setGridAdapter="@{viewModel.getAdapter()}" />
+            app:layout_constraintTop_toBottomOf="@+id/toolbarFL"
+            app:setGridAdapter="@{viewModel.getJobAdapter()}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

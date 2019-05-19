@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.gisass.browser.models.JobModel" />
+
+    </data>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/five_dp"
+        android:padding="@dimen/five_dp">
+
+        <ImageView
+            android:layout_width="@dimen/thirty_dp"
+            android:layout_height="@dimen/thirty_dp"
+            android:contentDescription="@null"
+            android:src="@{viewModel.jobIcon}"
+            android:visibility="visible" />
+
+        <com.gisass.browser.customFontViews.CustomTextviewRegular
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/two_dp"
+            android:maxLines="2"
+            android:minLines="2"
+            android:text="@{viewModel.jobName}"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/twelve_sp" />
+
+    </LinearLayout>
+
+</layout>

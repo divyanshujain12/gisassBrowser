@@ -15,7 +15,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activities.FloatingSearchBar"/>
+        <activity android:name=".activities.EducationActivity"></activity>
+        <activity android:name=".activities.FloatingSearchBar" />
         <activity android:name=".activities.ViewInTabActivity" />
         <activity android:name=".activities.GridRecyclerViewActivity" />
         <activity android:name=".activities.MainActivity">

@@ -11,13 +11,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.gisass.browser.R;
 import com.gisass.browser.databinding.GridWithBackgroundAdapterLayoutBinding;
+import com.gisass.browser.models.StaticIconWithBackgroundModel;
 import com.gisass.browser.viewModels.EducationAndJobViewModel;
+
+import rx.functions.Action1;
 
 public class GridWithBackgroundAdapter extends RecyclerView.Adapter<GridWithBackgroundAdapter.GridViewHolder> {
 
     private EducationAndJobViewModel staticIconViewModel;
     private GridWithBackgroundAdapterLayoutBinding gridWithBackgroundAdapterLayoutBinding;
-    private MutableLiveData<String> url;
+    private Action1<String> url;
 
     public GridWithBackgroundAdapter(EducationAndJobViewModel staticIconViewModel) {
         this.staticIconViewModel = staticIconViewModel;
@@ -35,9 +38,15 @@ public class GridWithBackgroundAdapter extends RecyclerView.Adapter<GridWithBack
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GridViewHolder holder, int position) {
-
-        gridWithBackgroundAdapterLayoutBinding.setViewModel(staticIconViewModel.getStaticIconModel(position));
+    public void onBindViewHolder(@NonNull final GridViewHolder holder, int position) {
+        final StaticIconWithBackgroundModel staticIconWithBackgroundModel = staticIconViewModel.getStaticIconModel(position);
+        gridWithBackgroundAdapterLayoutBinding.setViewModel(staticIconWithBackgroundModel);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                url.call(staticIconWithBackgroundModel.getIconName());
+            }
+        });
         gridWithBackgroundAdapterLayoutBinding.executePendingBindings();
 
     }
@@ -47,7 +56,7 @@ public class GridWithBackgroundAdapter extends RecyclerView.Adapter<GridWithBack
         return staticIconViewModel.getStaticIconModels().size();
     }
 
-    public void setUrl(MutableLiveData<String> url) {
+    public void setUrl(Action1<String> url) {
         this.url = url;
     }
 

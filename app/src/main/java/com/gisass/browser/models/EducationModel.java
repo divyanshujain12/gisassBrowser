@@ -2,6 +2,7 @@ package com.gisass.browser.models;
 
 
 import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -26,6 +27,18 @@ public class EducationModel extends BaseObservable {
     @SerializedName("url")
     @Expose
     private String url;
+
+    public boolean isLoading() {
+        return isLoading;
+    }
+
+    public void setLoading(boolean loading) {
+        isLoading = loading;
+
+    }
+
+    @Bindable
+    private boolean isLoading;
 
     public String getEducationId() {
         return educationId;

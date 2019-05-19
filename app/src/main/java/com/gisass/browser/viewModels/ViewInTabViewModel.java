@@ -6,7 +6,6 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.gisass.browser.R;
@@ -17,6 +16,8 @@ import com.gisass.browser.globalClass.MyApp;
 
 import java.util.ArrayList;
 
+import rx.functions.Action1;
+
 public class ViewInTabViewModel extends AndroidViewModel {
 
     private ArrayList<Object> dataArray;
@@ -25,15 +26,9 @@ public class ViewInTabViewModel extends AndroidViewModel {
     private AppSettingViewModel appSettingViewModel;
     private NewsViewModel newsViewModel;
     private ViewInTabAdapter viewInTabAdapter;
-    private MutableLiveData<String> url;
+    private Action1<String> urlObserver;
     private String[] bottomSheetUrls;
 
-
-    public MutableLiveData<String> getBottomSheetItemClick() {
-        return bottomSheetItemClick;
-    }
-
-    private MutableLiveData<String> bottomSheetItemClick;
 
     public ViewInTabViewModel(@NonNull Application application) {
         super(application);
@@ -41,8 +36,6 @@ public class ViewInTabViewModel extends AndroidViewModel {
 
     public void init() {
         dataArray = new ArrayList<>();
-        url = new MutableLiveData<>();
-        bottomSheetItemClick = new MutableLiveData<>();
         bottomSheetUrls = getApplication().getResources().getStringArray(R.array.bottom_sheet_items);
         viewInTabAdapter = new ViewInTabAdapter(this);
         initAllViewModel();
@@ -85,7 +78,7 @@ public class ViewInTabViewModel extends AndroidViewModel {
         appSettingViewModel = new AppSettingViewModel();
         newsViewModel = new NewsViewModel(getApplication());
         initializeAllModels();
-        setMutableUrlToAdapters();
+
     }
 
     private void initializeAllModels() {
@@ -95,13 +88,12 @@ public class ViewInTabViewModel extends AndroidViewModel {
         newsViewModel.init();
     }
 
-    private void setMutableUrlToAdapters() {
+    public void setActionUrlToAdapters(Action1 url) {
+        this.urlObserver = url;
         staticIconViewModel.getAdapter().setUrl(url);
+        gridIconWithBackgroundViewModel.getAdapter().setUrl(url);
     }
 
-    public MutableLiveData<String> getUrl() {
-        return url;
-    }
 
     private void getAllModels() {
         dataArray.add(staticIconViewModel.getStaticIconModels());
@@ -118,16 +110,16 @@ public class ViewInTabViewModel extends AndroidViewModel {
                 onAdvertisementItemClick(view);
                 break;
             case 1:
-                bottomSheetItemClick.postValue(bottomSheetUrls[1]);
+                urlObserver.call(bottomSheetUrls[1]);
                 break;
             case 2:
 
                 break;
             case 3:
-                bottomSheetItemClick.postValue(bottomSheetUrls[3]);
+                urlObserver.call(bottomSheetUrls[3]);
                 break;
             case 4:
-                bottomSheetItemClick.postValue(bottomSheetUrls[4]);
+                urlObserver.call(bottomSheetUrls[4]);
                 break;
 
         }
@@ -137,18 +129,18 @@ public class ViewInTabViewModel extends AndroidViewModel {
         final Activity activity = ((MyApp) getApplication()).getCurrentActivity();
         final String[] urls = activity.getResources().getStringArray(R.array.advertisement_ads);
 
-        CustomDialogs.getInstance().getAdPopup(activity, view, R.menu.bottom_sheet_popup).observe((MainActivity) activity, new Observer<Integer>() {
+        CustomDialogs.getInstance().getAdvertisementTooltip(activity, view).observe((MainActivity) activity, new Observer<Integer>() {
             @Override
             public void onChanged(Integer s) {
                 switch (s) {
-                    case R.id.buzzmateAdMenu:
-                        bottomSheetItemClick.postValue(urls[0]);
+                    case 1:
+                        urlObserver.call(urls[0]);
                         break;
-                    case R.id.gisassAdMenu:
-                        bottomSheetItemClick.postValue(urls[1]);
+                    case 2:
+                        urlObserver.call(urls[1]);
                         break;
-                    case R.id.browserAdMenu:
-                        bottomSheetItemClick.postValue(urls[2]);
+                    case 3:
+                        urlObserver.call(urls[2]);
                         break;
                 }
             }

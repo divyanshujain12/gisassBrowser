@@ -3,6 +3,8 @@ package com.gisass.browser.utils;
 import android.app.Activity;
 import android.view.Menu;
 
+import java.net.URL;
+
 public class Utils {
     private static final Utils ourInstance = new Utils();
 
@@ -30,5 +32,19 @@ public class Utils {
             menu.getItem(i).setVisible(show);
         }
 
+    }
+
+    public static boolean isValidUrl(String url) {
+        /* Try creating a valid URL */
+        try {
+            new URL(url).toURI();
+            return true;
+        }
+
+        // If there was an Exception
+        // while creating URL object
+        catch (Exception e) {
+            return false;
+        }
     }
 }

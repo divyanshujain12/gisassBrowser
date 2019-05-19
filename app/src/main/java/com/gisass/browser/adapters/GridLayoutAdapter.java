@@ -13,11 +13,13 @@ import com.gisass.browser.R;
 import com.gisass.browser.databinding.GridAdapterLayoutBinding;
 import com.gisass.browser.viewModels.SocialViewModel;
 
+import rx.functions.Action1;
+
 public class GridLayoutAdapter extends RecyclerView.Adapter<GridLayoutAdapter.GridViewHolder> {
 
     private SocialViewModel staticIconViewModel;
     private GridAdapterLayoutBinding gridAdapterLayoutBinding;
-    private MutableLiveData<String> url;
+    private Action1<String> url;
     private String[] allUrls;
 
     public GridLayoutAdapter(SocialViewModel staticIconViewModel) {
@@ -43,7 +45,7 @@ public class GridLayoutAdapter extends RecyclerView.Adapter<GridLayoutAdapter.Gr
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                url.setValue(allUrls[position]);
+                url.call(allUrls[position]);
             }
         });
         gridAdapterLayoutBinding.executePendingBindings();
@@ -55,7 +57,7 @@ public class GridLayoutAdapter extends RecyclerView.Adapter<GridLayoutAdapter.Gr
         return staticIconViewModel.getStaticIconModels().size();
     }
 
-    public void setUrl(MutableLiveData<String> url) {
+    public void setUrl(Action1<String> url) {
         this.url = url;
     }
 

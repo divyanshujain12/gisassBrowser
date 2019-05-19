@@ -93,16 +93,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -116,10 +110,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String url = condensedTitle.toString();
             tabSwitcher.addTab(TabUtils.getInstance().createTab(tabSwitcher.getCount(), url, 1), 0, TabUtils.getInstance().createRevealAnimation(tabSwitcher));
         } else {
-            //tabSwitcher.getSelectedTab().getParameters().putInt(TabUtils.VIEW_TYPE_EXTRA, 1);
             tabSwitcher.getSelectedTab().getParameters().putString(TabUtils.SELECTED_ICON_URL, "");
             decorator.showTypeTwo(false);
-            //tabSwitcher.notifyTabChanged(tabSwitcher.getSelectedTab());
+
         }
 
 

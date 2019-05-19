@@ -27,16 +27,19 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.gisass.browser.R;
 import com.gisass.browser.animations.ResizeWidthAnimation;
 import com.gisass.browser.customFontViews.CustomEditTextRegular;
+import com.gisass.browser.databinding.ActivityEducationBinding;
+import com.gisass.browser.databinding.ActivityJobBinding;
 import com.gisass.browser.databinding.ActivityViewInTabBinding;
 import com.gisass.browser.utils.KeyboardUtils;
 import com.gisass.browser.utils.TabUtils;
 import com.gisass.browser.utils.Utils;
+import com.gisass.browser.viewModels.EducationViewModel;
+import com.gisass.browser.viewModels.JobViewModel;
 import com.gisass.browser.viewModels.ViewInTabViewModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -46,11 +49,11 @@ import java.util.Objects;
 import de.mrapp.android.tabswitcher.StatefulTabSwitcherDecorator;
 import de.mrapp.android.tabswitcher.Tab;
 import de.mrapp.android.tabswitcher.TabSwitcher;
+import rx.functions.Action1;
 
 public class Decorator extends StatefulTabSwitcherDecorator {
     private MainActivity mainActivity;
     private TabSwitcher tabSwitcher;
-    private ViewInTabViewModel viewInTabViewModel;
     private ProgressBar contentLoadingPB;
     private CustomEditTextRegular toolbarET;
     private ConstraintLayout typeOne, typeTwo;
@@ -58,16 +61,21 @@ public class Decorator extends StatefulTabSwitcherDecorator {
     private Menu menu;
     private int toolbarETInitialWidth = 0;
     private View showDrawerIV;
+    private int viewType = 1;
 
     private static final String VIEW_TYPE_EXTRA = MainActivity.class.getName() + "::ViewType";
+    private static final String EDUCATION = "Education";
+    private static final String JOBS = "Jobs";
     private static String SELECTED_ICON_URL = "selected_icon_url";
     private DrawerLayout drawerLayout;
+    private Action1<String> action1;
 
     public Decorator(MainActivity mainActivity, TabSwitcher tabSwitcher, DrawerLayout drawerLayout) {
         this.mainActivity = mainActivity;
         this.tabSwitcher = tabSwitcher;
         this.drawerLayout = drawerLayout;
         registerKeyboardVisible();
+        createAction1ToReadUrl();
     }
 
     @NonNull
@@ -78,20 +86,34 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         switch (viewType) {
             case 1:
                 view = inflater.inflate(R.layout.activity_view_in_tab, parent, false);
-                viewInTabViewModel = ViewModelProviders.of(mainActivity).get(ViewInTabViewModel.class);
+                //View Models
+                ViewInTabViewModel viewInTabViewModel = ViewModelProviders.of(mainActivity).get(ViewInTabViewModel.class);
                 ActivityViewInTabBinding activityViewInTabBinding = DataBindingUtil.bind(view);
                 activityViewInTabBinding.setViewModel(viewInTabViewModel);
                 viewInTabViewModel.init();
-                onIconSelect();
-                registerBottomSheetIconClick();
+                viewInTabViewModel.setActionUrlToAdapters(action1);
                 break;
             case 2:
-
-                view = inflater.inflate(R.layout.web_view_layout, parent, false);
-                //WebViewLayoutBinding    webViewLayoutBinding = DataBindingUtil.bind(view);
+                view = inflater.inflate(R.layout.activity_education, parent, false);
+                ActivityEducationBinding educationBinding = DataBindingUtil.bind(view);
+                EducationViewModel educationViewModel = ViewModelProviders.of(mainActivity).get(EducationViewModel.class);
+                educationViewModel.init();
+                Objects.requireNonNull(educationBinding).setViewModel(educationViewModel);
+                educationViewModel.getEducationsFromApi();
+                educationViewModel.setUrl(action1);
+                break;
+            case 3:
+                view = inflater.inflate(R.layout.activity_job, parent, false);
+                ActivityJobBinding jobBinding = DataBindingUtil.bind(view);
+                JobViewModel jobViewModel = ViewModelProviders.of(mainActivity).get(JobViewModel.class);
+                jobViewModel.init();
+                Objects.requireNonNull(jobBinding).setViewModel(jobViewModel);
+                jobViewModel.getJobsFromApi();
+                jobViewModel.setUrl(action1);
                 break;
         }
 
+        assert view != null;
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         if (toolbar != null) {
             toolbar.inflateMenu(R.menu.tab);
@@ -104,9 +126,34 @@ public class Decorator extends StatefulTabSwitcherDecorator {
 
     @Override
     protected void onShowTab(@NonNull Context context, @NonNull TabSwitcher tabSwitcher, @NonNull View view, @NonNull Tab tab, int index, int viewType, @Nullable Object state, @Nullable Bundle savedInstanceState) {
-        String url = tab.getParameters().getString(SELECTED_ICON_URL);
-        initViews(view, savedInstanceState);
+        initViewForAllTab(view);
+        this.viewType = viewType;
+
+        switch (viewType) {
+            case 1:
+                homeTab(view, tab, savedInstanceState);
+                break;
+
+            default:
+                defautTab();
+                break;
+        }
+
+
+    }
+
+    private void initViewForAllTab(@NonNull View view) {
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        menu = toolbar.getMenu();
+        toolbarET = view.findViewById(R.id.toolbarET);
+        showDrawerIV = view.findViewById(R.id.showDrawer);
         registerOnImeOptionClick();
+    }
+
+    private void homeTab(@NonNull View view, @NonNull Tab tab, @Nullable Bundle savedInstanceState) {
+        String url = tab.getParameters().getString(SELECTED_ICON_URL);
+        initViewsForTabTypeOne(view, savedInstanceState);
+
         if (url != null && !url.equals("")) {
             showTypeTwo(true);
             setupTabForWebView(tab, url);
@@ -117,10 +164,14 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         }
     }
 
-    private void initViews(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    private void defautTab() {
+        showDrawerIV.setVisibility(View.GONE);
+        toolbarET.setVisibility(View.VISIBLE);
+    }
+
+    private void initViewsForTabTypeOne(@NonNull View view, @Nullable Bundle savedInstanceState) {
         typeOne = view.findViewById(R.id.typeOne);
         typeTwo = view.findViewById(R.id.typeTwo);
-        toolbarET = view.findViewById(R.id.toolbarET);
         contentLoadingPB = view.findViewById(R.id.contentLoadingPB);
         webViewContainer = view.findViewById(R.id.webViewContainer);
         if (savedInstanceState == null) {
@@ -129,9 +180,8 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         contentLoadingPB.setVisibility(View.GONE);
         contentLoadingPB.setMax(100);
         view.findViewById(R.id.externalET).setOnClickListener(new CustomViewClick());
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
-        menu = toolbar.getMenu();
-        showDrawerIV = view.findViewById(R.id.showDrawer);
+
+
         showDrawerIV.setOnClickListener(new CustomViewClick());
     }
 
@@ -197,23 +247,25 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         }
     }
 
-    private void onIconSelect() {
-        viewInTabViewModel.getUrl().observe(mainActivity, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                tabSwitcher.addTab(TabUtils.getInstance().createTab(tabSwitcher.getCount(), s, 1), 0, TabUtils.getInstance().createRevealAnimation(tabSwitcher));
+
+    private void addTabOnIconClick(String s) {
+        if (Utils.isValidUrl(s))
+            tabSwitcher.addTab(TabUtils.getInstance().createTab(tabSwitcher.getCount(), s, 1), 0, TabUtils.getInstance().createRevealAnimation(tabSwitcher));
+        else {
+
+            switch (s) {
+                case EDUCATION:
+                    tabSwitcher.addTab(TabUtils.getInstance().createTab(tabSwitcher.getCount(), "", 2), 0, TabUtils.getInstance().createRevealAnimation(tabSwitcher));
+                    break;
+                case JOBS:
+                    tabSwitcher.addTab(TabUtils.getInstance().createTab(tabSwitcher.getCount(), "", 3), 0, TabUtils.getInstance().createRevealAnimation(tabSwitcher));
+                    break;
             }
-        });
+
+
+        }
     }
 
-    private void registerBottomSheetIconClick() {
-        viewInTabViewModel.getBottomSheetItemClick().observe(mainActivity, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                tabSwitcher.addTab(TabUtils.getInstance().createTab(tabSwitcher.getCount(), s, 1), 0, TabUtils.getInstance().createRevealAnimation(tabSwitcher));
-            }
-        });
-    }
 
     public void showTypeTwo(boolean show) {
         typeOne.setVisibility(show ? View.GONE : View.VISIBLE);
@@ -281,7 +333,6 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                     if (!isVisible) {
                         onKeyboardHide();
                     } else {
-
                         onKeyboardShow();
 //
                     }
@@ -294,10 +345,12 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         animateToolbarET(toolbarETInitialWidth);
         Utils.getInstance().showToolbarItems(menu, true, mainActivity);
         String toolbarETUrl = Objects.requireNonNull(toolbarET.getText()).toString();
-        if (toolbarETUrl.equals("")) {
-            showTypeTwo(false);
-        } else {
-            showTypeTwo(true);
+        if (viewType == 1) {
+            if (toolbarETUrl.equals("")) {
+                showTypeTwo(false);
+            } else {
+                showTypeTwo(true);
+            }
         }
     }
 
@@ -322,9 +375,16 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     String formattedUrl = Utils.getInstance().getFormattedUrlString(toolbarET.getText().toString().replaceAll(" ", ""));
                     if (URLUtil.isValidUrl(formattedUrl)) {
-                        tabSwitcher.getSelectedTab().getParameters().putString(SELECTED_ICON_URL, formattedUrl);
-                        toolbarET.setText(formattedUrl);
-                        setupTabForWebView(tabSwitcher.getSelectedTab(), formattedUrl);
+                        if (viewType == 1) {
+                            tabSwitcher.getSelectedTab().getParameters().putString(SELECTED_ICON_URL, formattedUrl);
+                            toolbarET.setText(formattedUrl);
+                            setupTabForWebView(tabSwitcher.getSelectedTab(), formattedUrl);
+                        } else {
+                            toolbarET.setText(null);
+                            onKeyboardHide();
+                            addTabOnIconClick(formattedUrl);
+                        }
+
                         KeyboardUtils.forceCloseKeyboard(toolbarET);
                     }
                     return true;
@@ -332,5 +392,14 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                 return false;
             }
         });
+    }
+
+    private void createAction1ToReadUrl() {
+        action1 = new Action1<String>() {
+            @Override
+            public void call(String s) {
+                addTabOnIconClick(s);
+            }
+        };
     }
 }
