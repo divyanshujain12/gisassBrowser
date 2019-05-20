@@ -11,4 +11,7 @@
     <color name="book_loading_background">@android:color/transparent</color>
     <color name="book_loading_book">@color/popup_card_bg</color>
     <color name="book_loading_page">@color/popup_card_bg</color>
+    <color name="blue">#0000FF</color>
+    <color name="snippet_color">#3F3F3F</color>
+    <color name="link_color">#008000</color>
 </resources>
