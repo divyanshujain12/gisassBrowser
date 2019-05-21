@@ -16,6 +16,9 @@ public class Pagemap {
     @SerializedName("cse_image")
     @Expose
     private List<CseImage> cseImage = null;
+    @SerializedName("listitem")
+    @Expose
+    private List<Listitem> listitem = null;
 
     public List<CseThumbnail> getCseThumbnail() {
         return cseThumbnail;
@@ -39,6 +42,14 @@ public class Pagemap {
 
     public void setCseImage(List<CseImage> cseImage) {
         this.cseImage = cseImage;
+    }
+
+    public List<Listitem> getListitem() {
+        return listitem;
+    }
+
+    public void setListitem(List<Listitem> listitem) {
+        this.listitem = listitem;
     }
 
 }

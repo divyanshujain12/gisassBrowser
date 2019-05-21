@@ -1,46 +1,30 @@
 
 package com.gisass.browser.models;
 
-import androidx.databinding.BaseObservable;
-
+import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class GoogleSearchModel extends BaseObservable {
+public class GoogleSearchModel {
 
     @SerializedName("kind")
     @Expose
     private String kind;
-    @SerializedName("title")
+    @SerializedName("url")
     @Expose
-    private String title;
-    @SerializedName("htmlTitle")
+    private Url url;
+    @SerializedName("queries")
     @Expose
-    private String htmlTitle;
-    @SerializedName("link")
+    private Queries queries;
+    @SerializedName("context")
     @Expose
-    private String link;
-    @SerializedName("displayLink")
+    private Context context;
+    @SerializedName("searchInformation")
     @Expose
-    private String displayLink;
-    @SerializedName("snippet")
+    private SearchInformation searchInformation;
+    @SerializedName("items")
     @Expose
-    private String snippet;
-    @SerializedName("htmlSnippet")
-    @Expose
-    private String htmlSnippet;
-    @SerializedName("cacheId")
-    @Expose
-    private String cacheId;
-    @SerializedName("formattedUrl")
-    @Expose
-    private String formattedUrl;
-    @SerializedName("htmlFormattedUrl")
-    @Expose
-    private String htmlFormattedUrl;
-    @SerializedName("pagemap")
-    @Expose
-    private Pagemap pagemap;
+    private List<Item> items = null;
 
     public String getKind() {
         return kind;
@@ -50,84 +34,44 @@ public class GoogleSearchModel extends BaseObservable {
         this.kind = kind;
     }
 
-    public String getTitle() {
-        return title;
+    public Url getUrl() {
+        return url;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setUrl(Url url) {
+        this.url = url;
     }
 
-    public String getHtmlTitle() {
-        return htmlTitle;
+    public Queries getQueries() {
+        return queries;
     }
 
-    public void setHtmlTitle(String htmlTitle) {
-        this.htmlTitle = htmlTitle;
+    public void setQueries(Queries queries) {
+        this.queries = queries;
     }
 
-    public String getLink() {
-        return link;
+    public Context getContext() {
+        return context;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setContext(Context context) {
+        this.context = context;
     }
 
-    public String getDisplayLink() {
-        return displayLink;
+    public SearchInformation getSearchInformation() {
+        return searchInformation;
     }
 
-    public void setDisplayLink(String displayLink) {
-        this.displayLink = displayLink;
+    public void setSearchInformation(SearchInformation searchInformation) {
+        this.searchInformation = searchInformation;
     }
 
-    public String getSnippet() {
-        return snippet;
+    public List<Item> getItems() {
+        return items;
     }
 
-    public void setSnippet(String snippet) {
-        this.snippet = snippet;
-    }
-
-    public String getHtmlSnippet() {
-        return htmlSnippet;
-    }
-
-    public void setHtmlSnippet(String htmlSnippet) {
-        this.htmlSnippet = htmlSnippet;
-    }
-
-    public String getCacheId() {
-        return cacheId;
-    }
-
-    public void setCacheId(String cacheId) {
-        this.cacheId = cacheId;
-    }
-
-    public String getFormattedUrl() {
-        return formattedUrl;
-    }
-
-    public void setFormattedUrl(String formattedUrl) {
-        this.formattedUrl = formattedUrl;
-    }
-
-    public String getHtmlFormattedUrl() {
-        return htmlFormattedUrl;
-    }
-
-    public void setHtmlFormattedUrl(String htmlFormattedUrl) {
-        this.htmlFormattedUrl = htmlFormattedUrl;
-    }
-
-    public Pagemap getPagemap() {
-        return pagemap;
-    }
-
-    public void setPagemap(Pagemap pagemap) {
-        this.pagemap = pagemap;
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 
 }

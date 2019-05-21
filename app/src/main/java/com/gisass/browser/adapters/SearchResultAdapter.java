@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.gisass.browser.R;
 import com.gisass.browser.databinding.AdapterSearchResultBinding;
-import com.gisass.browser.models.GoogleSearchModel;
+import com.gisass.browser.models.Item;
 import com.gisass.browser.viewModels.SearchResultViewModel;
 
 public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapter.SearchResultViewHolder> {
@@ -40,15 +40,17 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
 
     @Override
     public void onBindViewHolder(@NonNull SearchResultViewHolder holder, int position) {
-        GoogleSearchModel googleSearchModel = searchResultViewModel.getGoogleSearchModels().get(position);
-        adapterSearchResultBinding.setModel(googleSearchModel);
+        Item item = searchResultViewModel.getGoogleSearchModel().get(position);
+        adapterSearchResultBinding.setModel(item);
         adapterSearchResultBinding.executePendingBindings();
 
     }
 
     @Override
     public int getItemCount() {
-        return searchResultViewModel.getGoogleSearchModels().size();
+        if (searchResultViewModel.getGoogleSearchModel() != null)
+            return searchResultViewModel.getGoogleSearchModel().size();
+        return 0;
     }
 
     public void setUrl(MutableLiveData<String> url) {

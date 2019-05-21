@@ -35,11 +35,13 @@ import com.gisass.browser.customFontViews.CustomEditTextRegular;
 import com.gisass.browser.databinding.ActivityEducationBinding;
 import com.gisass.browser.databinding.ActivityJobBinding;
 import com.gisass.browser.databinding.ActivityViewInTabBinding;
+import com.gisass.browser.databinding.SearchResultViewBinding;
 import com.gisass.browser.utils.KeyboardUtils;
 import com.gisass.browser.utils.TabUtils;
 import com.gisass.browser.utils.Utils;
 import com.gisass.browser.viewModels.EducationViewModel;
 import com.gisass.browser.viewModels.JobViewModel;
+import com.gisass.browser.viewModels.SearchResultViewModel;
 import com.gisass.browser.viewModels.ViewInTabViewModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -69,6 +71,8 @@ public class Decorator extends StatefulTabSwitcherDecorator {
     private static String SELECTED_ICON_URL = "selected_icon_url";
     private DrawerLayout drawerLayout;
     private Action1<String> action1;
+
+    private SearchResultViewModel searchResultViewModel;
 
     public Decorator(MainActivity mainActivity, TabSwitcher tabSwitcher, DrawerLayout drawerLayout) {
         this.mainActivity = mainActivity;
@@ -111,6 +115,15 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                 jobViewModel.getJobsFromApi();
                 jobViewModel.setUrl(action1);
                 break;
+            case 4:
+                view = inflater.inflate(R.layout.search_result_view, parent, false);
+                SearchResultViewBinding searchResultViewBinding = DataBindingUtil.bind(view);
+                searchResultViewModel = ViewModelProviders.of(mainActivity).get(SearchResultViewModel.class);
+                searchResultViewModel.init();
+                assert searchResultViewBinding != null;
+                searchResultViewBinding.setViewModel(searchResultViewModel);
+
+                break;
         }
 
         assert view != null;
@@ -128,14 +141,19 @@ public class Decorator extends StatefulTabSwitcherDecorator {
     protected void onShowTab(@NonNull Context context, @NonNull TabSwitcher tabSwitcher, @NonNull View view, @NonNull Tab tab, int index, int viewType, @Nullable Object state, @Nullable Bundle savedInstanceState) {
         initViewForAllTab(view);
         this.viewType = viewType;
-
         switch (viewType) {
             case 1:
                 homeTab(view, tab, savedInstanceState);
                 break;
-
+            case 4:
+                String searchQuery = tab.getParameters().getString(SELECTED_ICON_URL);
+                searchResultViewModel.getSearchResultFromApi(searchQuery);
+                searchResultViewModel.setSearch_key(searchQuery);
+                registerOnImeOptionClick((CustomEditTextRegular) view.findViewById(R.id.customSearchET));
+                hideAllItemsFromToolbar();
+                break;
             default:
-                defautTab();
+                defaultTab();
                 break;
         }
 
@@ -147,7 +165,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         menu = toolbar.getMenu();
         toolbarET = view.findViewById(R.id.toolbarET);
         showDrawerIV = view.findViewById(R.id.showDrawer);
-        registerOnImeOptionClick();
+        registerOnImeOptionClick(toolbarET);
     }
 
     private void homeTab(@NonNull View view, @NonNull Tab tab, @Nullable Bundle savedInstanceState) {
@@ -164,9 +182,14 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         }
     }
 
-    private void defautTab() {
+    private void defaultTab() {
         showDrawerIV.setVisibility(View.GONE);
         toolbarET.setVisibility(View.VISIBLE);
+    }
+
+    private void hideAllItemsFromToolbar() {
+        showDrawerIV.setVisibility(View.GONE);
+        toolbarET.setVisibility(View.GONE);
     }
 
     private void initViewsForTabTypeOne(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -260,6 +283,9 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                 case JOBS:
                     tabSwitcher.addTab(TabUtils.getInstance().createTab(tabSwitcher.getCount(), "", 3), 0, TabUtils.getInstance().createRevealAnimation(tabSwitcher));
                     break;
+                default:
+                    tabSwitcher.addTab(TabUtils.getInstance().createTab(tabSwitcher.getCount(), s, 4), 0, TabUtils.getInstance().createRevealAnimation(tabSwitcher));
+                    break;
             }
 
 
@@ -329,7 +355,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         KeyboardUtils.addKeyboardToggleListener(mainActivity, new KeyboardUtils.SoftKeyboardToggleListener() {
             @Override
             public void onToggleSoftKeyboard(boolean isVisible) {
-                if (toolbarET != null) {
+                if (toolbarET != null && viewType != 4) {
                     if (!isVisible) {
                         onKeyboardHide();
                     } else {
@@ -368,30 +394,52 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         }
     }
 
-    private void registerOnImeOptionClick() {
-        toolbarET.setOnEditorActionListener(new CustomEditTextRegular.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    String formattedUrl = Utils.getInstance().getFormattedUrlString(toolbarET.getText().toString().replaceAll(" ", ""));
-                    if (URLUtil.isValidUrl(formattedUrl)) {
-                        if (viewType == 1) {
-                            tabSwitcher.getSelectedTab().getParameters().putString(SELECTED_ICON_URL, formattedUrl);
-                            toolbarET.setText(formattedUrl);
-                            setupTabForWebView(tabSwitcher.getSelectedTab(), formattedUrl);
-                        } else {
-                            toolbarET.setText(null);
-                            onKeyboardHide();
-                            addTabOnIconClick(formattedUrl);
-                        }
+    private void registerOnImeOptionClick(CustomEditTextRegular customEditTextRegular) {
+        customEditTextRegular.setOnEditorActionListener(new CustomImeOptions());
+    }
 
-                        KeyboardUtils.forceCloseKeyboard(toolbarET);
-                    }
-                    return true;
+
+    private class CustomImeOptions implements CustomEditTextRegular.OnEditorActionListener {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                switch (v.getId()) {
+                    case R.id.toolbarET:
+                        toolbarETText();
+                        break;
+                    case R.id.customSearchET:
+                        String customSearchText = v.getText().toString();
+                        searchResultViewModel.getSearchResultFromApi(customSearchText);
+                        break;
                 }
-                return false;
             }
-        });
+            return false;
+        }
+    }
+
+
+    private boolean toolbarETText() {
+        String toolbarText = Objects.requireNonNull(toolbarET.getText()).toString();
+        if (toolbarText.contains(".")) {
+            String formattedUrl = Utils.getInstance().getFormattedUrlString(toolbarET.getText().toString().replaceAll(" ", ""));
+            if (URLUtil.isValidUrl(formattedUrl)) {
+                if (viewType == 1) {
+                    tabSwitcher.getSelectedTab().getParameters().putString(SELECTED_ICON_URL, formattedUrl);
+                    toolbarET.setText(formattedUrl);
+                    setupTabForWebView(tabSwitcher.getSelectedTab(), formattedUrl);
+                } else {
+                    toolbarET.setText(null);
+                    onKeyboardHide();
+                    addTabOnIconClick(formattedUrl);
+                }
+
+                KeyboardUtils.forceCloseKeyboard(toolbarET);
+            } else {
+                addTabOnIconClick(formattedUrl);
+            }
+        } else
+            addTabOnIconClick(toolbarText);
+        return true;
     }
 
     private void createAction1ToReadUrl() {
