@@ -1,6 +1,5 @@
 package com.gisass.browser.globalClass;
 
-import android.app.Activity;
 import android.app.Application;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +12,7 @@ public class MyApp extends Application {
     private GetDataService getDataService;
     public void onCreate() {
         super.onCreate();
-        getDataService = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
+        getDataService = RetrofitClientInstance.getRetrofitInstance(RetrofitClientInstance.BASE_URL).create(GetDataService.class);
 
     }
 

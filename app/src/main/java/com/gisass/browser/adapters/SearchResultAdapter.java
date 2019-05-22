@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gisass.browser.R;
@@ -14,16 +13,19 @@ import com.gisass.browser.databinding.AdapterSearchResultBinding;
 import com.gisass.browser.models.Item;
 import com.gisass.browser.viewModels.SearchResultViewModel;
 
+import rx.functions.Action1;
+
 public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapter.SearchResultViewHolder> {
 
     private SearchResultViewModel searchResultViewModel;
     private AdapterSearchResultBinding adapterSearchResultBinding;
 
 
-    private MutableLiveData<String> url;
+    private Action1<String> url;
 
     public SearchResultAdapter(SearchResultViewModel searchResultViewModel) {
         this.searchResultViewModel = searchResultViewModel;
+
     }
 
 
@@ -34,14 +36,21 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.adapter_search_result, parent, false);
         adapterSearchResultBinding = DataBindingUtil.bind(view);
+        SearchResultViewHolder holder = new SearchResultViewHolder(view);
 
-        return new SearchResultViewHolder(view);
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull SearchResultViewHolder holder, int position) {
-        Item item = searchResultViewModel.getGoogleSearchModel().get(position);
+        final Item item = searchResultViewModel.getGoogleSearchModel().get(position);
         adapterSearchResultBinding.setModel(item);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                url.call(item.getFormattedUrl());
+            }
+        });
         adapterSearchResultBinding.executePendingBindings();
 
     }
@@ -53,7 +62,12 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         return 0;
     }
 
-    public void setUrl(MutableLiveData<String> url) {
+
+    public AdapterSearchResultBinding getAdapterSearchResultBinding() {
+        return adapterSearchResultBinding;
+    }
+
+    public void setUrl(Action1<String> url) {
         this.url = url;
     }
 

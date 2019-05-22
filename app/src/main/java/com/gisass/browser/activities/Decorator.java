@@ -119,9 +119,11 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                 view = inflater.inflate(R.layout.search_result_view, parent, false);
                 SearchResultViewBinding searchResultViewBinding = DataBindingUtil.bind(view);
                 searchResultViewModel = ViewModelProviders.of(mainActivity).get(SearchResultViewModel.class);
-                searchResultViewModel.init();
                 assert searchResultViewBinding != null;
+                searchResultViewModel.setRecyclerView(searchResultViewBinding.ItemRV);
+                searchResultViewModel.init();
                 searchResultViewBinding.setViewModel(searchResultViewModel);
+                searchResultViewModel.setUrl(action1);
 
                 break;
         }
@@ -146,9 +148,12 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                 homeTab(view, tab, savedInstanceState);
                 break;
             case 4:
-                String searchQuery = tab.getParameters().getString(SELECTED_ICON_URL);
-                searchResultViewModel.getSearchResultFromApi(searchQuery);
-                searchResultViewModel.setSearch_key(searchQuery);
+                if (savedInstanceState == null) {
+                    String searchQuery = tab.getParameters().getString(SELECTED_ICON_URL);
+                    searchResultViewModel.getSearchResultFromApi(searchQuery);
+                    searchResultViewModel.setSearch_key(searchQuery);
+                }
+
                 registerOnImeOptionClick((CustomEditTextRegular) view.findViewById(R.id.customSearchET));
                 hideAllItemsFromToolbar();
                 break;
@@ -272,7 +277,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
 
 
     private void addTabOnIconClick(String s) {
-        if (Utils.isValidUrl(s))
+        if (URLUtil.isValidUrl(s))
             tabSwitcher.addTab(TabUtils.getInstance().createTab(tabSwitcher.getCount(), s, 1), 0, TabUtils.getInstance().createRevealAnimation(tabSwitcher));
         else {
 
@@ -420,7 +425,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
 
     private boolean toolbarETText() {
         String toolbarText = Objects.requireNonNull(toolbarET.getText()).toString();
-        if (toolbarText.contains(".")) {
+        if (toolbarText.contains("http://") || toolbarText.contains("https://")) {
             String formattedUrl = Utils.getInstance().getFormattedUrlString(toolbarET.getText().toString().replaceAll(" ", ""));
             if (URLUtil.isValidUrl(formattedUrl)) {
                 if (viewType == 1) {
@@ -428,18 +433,25 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                     toolbarET.setText(formattedUrl);
                     setupTabForWebView(tabSwitcher.getSelectedTab(), formattedUrl);
                 } else {
-                    toolbarET.setText(null);
-                    onKeyboardHide();
+                    resetToolbar();
                     addTabOnIconClick(formattedUrl);
                 }
 
                 KeyboardUtils.forceCloseKeyboard(toolbarET);
             } else {
+                resetToolbar();
                 addTabOnIconClick(formattedUrl);
             }
-        } else
+        } else {
+            resetToolbar();
             addTabOnIconClick(toolbarText);
+        }
         return true;
+    }
+
+    private void resetToolbar() {
+        toolbarET.setText(null);
+        onKeyboardHide();
     }
 
     private void createAction1ToReadUrl() {
