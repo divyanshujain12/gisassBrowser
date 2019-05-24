@@ -120,7 +120,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                 SearchResultViewBinding searchResultViewBinding = DataBindingUtil.bind(view);
                 searchResultViewModel = ViewModelProviders.of(mainActivity).get(SearchResultViewModel.class);
                 assert searchResultViewBinding != null;
-                searchResultViewModel.setRecyclerView(searchResultViewBinding.ItemRV);
+                searchResultViewModel.setSearchResultViewBinding(searchResultViewBinding);
                 searchResultViewModel.init();
                 searchResultViewBinding.setViewModel(searchResultViewModel);
                 searchResultViewModel.setUrl(action1);
@@ -155,7 +155,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                 }
 
                 registerOnImeOptionClick((CustomEditTextRegular) view.findViewById(R.id.customSearchET));
-                hideAllItemsFromToolbar();
+//                hideAllItemsFromToolbar();
                 break;
             default:
                 defaultTab();
@@ -360,7 +360,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         KeyboardUtils.addKeyboardToggleListener(mainActivity, new KeyboardUtils.SoftKeyboardToggleListener() {
             @Override
             public void onToggleSoftKeyboard(boolean isVisible) {
-                if (toolbarET != null && viewType != 4) {
+                if (toolbarET != null) {
                     if (!isVisible) {
                         onKeyboardHide();
                     } else {
@@ -388,7 +388,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
     private void onKeyboardShow() {
         Utils.getInstance().showToolbarItems(menu, false, mainActivity);
         toolbarETInitialWidth = toolbarET.getWidth();
-        animateToolbarET(((View) toolbarET.getParent()).getWidth() - 80);
+        animateToolbarET(((View) toolbarET.getParent()).getWidth() - 100);
     }
 
     private void animateToolbarET(int desiredWith) {
@@ -462,4 +462,5 @@ public class Decorator extends StatefulTabSwitcherDecorator {
             }
         };
     }
+
 }

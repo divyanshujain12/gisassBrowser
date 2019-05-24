@@ -1,16 +1,17 @@
 package com.gisass.browser.viewModels;
 
 import android.app.Application;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.gisass.browser.ApiUtils.GetDataService;
 import com.gisass.browser.ApiUtils.RetrofitClientInstance;
 import com.gisass.browser.adapters.SearchResultAdapter;
 import com.gisass.browser.customViews.CustomDialog;
+import com.gisass.browser.databinding.SearchResultViewBinding;
 import com.gisass.browser.globalClass.MyApp;
 import com.gisass.browser.models.GoogleSearchModel;
 import com.gisass.browser.models.Item;
@@ -31,13 +32,14 @@ public class SearchResultViewModel extends AndroidViewModel {
 
     private GoogleSearchModel googleSearchModel = new GoogleSearchModel();
     private List<Item> googleItems = new ArrayList<>();
-    private RecyclerView recyclerView;
+
     private SearchResultAdapter searchResultAdapter;
     private GetDataService getDataService;
     private static final String GOOGLE_KEY = "AIzaSyD_8FjOCDArg8u8Nx9HdvactSL50z-8X-s";
     private static final String GOOGLE_CX = "005503866809826999211:eqkqu0bguzo";
     private String search_key = "";
     private CustomDialog customDialog;
+    private SearchResultViewBinding searchResultViewBinding;
 
     public SearchResultViewModel(@NonNull Application application) {
         super(application);
@@ -59,15 +61,17 @@ public class SearchResultViewModel extends AndroidViewModel {
 
     public void getSearchResultFromApi(String searchQuery) {
         googleItems = new ArrayList<>();
-        customDialog.show();
+        searchResultViewBinding.shimmerViewContainer.setVisibility(View.VISIBLE);
+        searchResultViewBinding.shimmerViewContainer.startShimmerAnimation();
 
         getDataService.getSearchResult(GOOGLE_KEY, GOOGLE_CX, searchQuery).enqueue(new Callback<GoogleSearchModel>() {
             @Override
             public void onResponse(@NotNull Call<GoogleSearchModel> call, @NotNull Response<GoogleSearchModel> response) {
-                customDialog.hide();
+                searchResultViewBinding.shimmerViewContainer.stopShimmerAnimation();
+                searchResultViewBinding.shimmerViewContainer.setVisibility(View.GONE);
                 googleSearchModel = response.body();
                 googleItems.addAll(googleSearchModel.getItems());
-                recyclerView.setAdapter(searchResultAdapter);
+                searchResultViewBinding.ItemRV.setAdapter(searchResultAdapter);
             }
 
             @Override
@@ -85,18 +89,21 @@ public class SearchResultViewModel extends AndroidViewModel {
         this.search_key = search_key;
     }
 
-    public void setRecyclerView(RecyclerView recyclerView) {
-        this.recyclerView = recyclerView;
-    }
 
     private void setAdapterToRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(((MyApp) getApplication()).getCurrentActivity());
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(searchResultAdapter);
+        searchResultViewBinding.ItemRV.setLayoutManager(linearLayoutManager);
+        searchResultViewBinding.ItemRV.setAdapter(searchResultAdapter);
     }
 
     public void setUrl(Action1<String> url) {
         searchResultAdapter.setUrl(url);
+    }
+
+    public void setSearchResultViewBinding(SearchResultViewBinding searchResultViewBinding) {
+        this.searchResultViewBinding = searchResultViewBinding;
+        this.searchResultViewBinding.shimmerViewContainer.setVisibility(View.GONE);
+
     }
 }
 

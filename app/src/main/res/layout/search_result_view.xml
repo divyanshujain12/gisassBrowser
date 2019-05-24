@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:shimmer="http://schemas.android.com/tools">
 
     <data>
 
@@ -13,7 +14,47 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/tab_header" />
+        <de.mrapp.android.util.view.UnfocusableToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            android:contentInsetStart="0dp"
+            android:contentInsetLeft="0dp"
+            android:contentInsetEnd="0dp"
+            android:contentInsetRight="0dp"
+            android:focusable="false"
+            android:theme="?attr/toolbarTheme"
+            app:contentInsetEnd="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetStart="0dp"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/showDrawer"
+                android:layout_width="@dimen/fourty_dp"
+                android:layout_height="@dimen/fourty_dp"
+                android:padding="@dimen/seven_dp"
+                android:src="@drawable/ic_hamburger"
+                android:visibility="gone" />
+
+            <com.gisass.browser.customViews.FocusEditText
+                android:id="@+id/toolbarET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/five_dp"
+                android:background="@drawable/rounded_corner"
+                android:drawableEnd="@drawable/ic_search_black_24dp"
+                android:hint="@string/search"
+                android:imeOptions="actionSearch"
+                android:padding="@dimen/five_dp"
+                android:singleLine="true"
+                android:text="@={viewModel.search_key}"
+                android:textSize="@dimen/fourteen_sp"
+                android:visibility="visible" />
+
+        </de.mrapp.android.util.view.UnfocusableToolbar>
 
         <com.gisass.browser.customViews.FocusEditText
             android:id="@+id/customSearchET"
@@ -27,13 +68,34 @@
             android:imeOptions="actionSearch"
             android:padding="@dimen/ten_dp"
             android:singleLine="true"
+            android:visibility="gone"
             android:text="@={viewModel.search_key}"
             android:textSize="@dimen/fourteen_sp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/ItemRV"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmer_view_container"
+                shimmer:duration="800"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical">
+
+                <!-- Adding 7 rows of placeholders -->
+                <include layout="@layout/simmer_view" />
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/ItemRV"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </LinearLayout>
 </layout>

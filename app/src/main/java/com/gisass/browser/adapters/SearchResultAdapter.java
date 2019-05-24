@@ -48,7 +48,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                url.call(item.getFormattedUrl());
+                url.call(item.getLink());
             }
         });
         adapterSearchResultBinding.executePendingBindings();

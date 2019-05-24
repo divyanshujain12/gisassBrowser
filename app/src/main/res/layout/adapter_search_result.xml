@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -8,31 +8,55 @@
             type="com.gisass.browser.models.Item" />
     </data>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/twenty_dp"
-        android:orientation="vertical">
+        android:layout_margin="@dimen/three_dp"
+        app:cardElevation="@dimen/five_dp">
 
-        <com.gisass.browser.customFontViews.CustomTextviewRegular
-            android:layout_width="wrap_content"
+        <LinearLayout
+            contentPadding="@dimen/five_dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{model.title}"
-            android:textColor="@color/blue"
-            android:textSize="@dimen/sixteen_sp" />
+            android:padding="@dimen/five_dp"
+            android:orientation="vertical">
 
-        <com.gisass.browser.customFontViews.CustomTextviewRegular
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{model.link}"
-            android:textColor="@color/link_color"
-            android:textSize="@dimen/fourteen_sp" />
+            <com.gisass.browser.customFontViews.CustomTextviewBold
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:paddingStart="@dimen/ten_dp"
+                android:paddingEnd="@dimen/ten_dp"
+                android:text="@{model.title}"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/sixteen_sp" />
 
-        <com.gisass.browser.customFontViews.CustomTextviewRegular
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{model.snippet}"
-            android:textColor="@color/snippet_color"
-            android:textSize="@dimen/fourteen_sp" />
-    </LinearLayout>
+            <com.gisass.browser.customFontViews.CustomTextviewRegular
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:paddingStart="@dimen/ten_dp"
+                android:paddingEnd="@dimen/ten_dp"
+                android:paddingBottom="@dimen/five_dp"
+                android:text="@{model.link}"
+                android:textColor="@color/link_color"
+                android:textSize="@dimen/fourteen_sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/tablet_tab_background_color_light" />
+
+            <com.gisass.browser.customFontViews.CustomTextviewRegular
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:paddingStart="@dimen/ten_dp"
+                android:paddingTop="@dimen/five_dp"
+                android:paddingEnd="@dimen/ten_dp"
+                android:text="@{model.snippet}"
+                android:textColor="@color/snippet_color"
+                android:textSize="@dimen/fourteen_sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 </layout>
