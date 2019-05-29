@@ -120,7 +120,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
             case 4:
                 view = inflater.inflate(R.layout.search_result_view, parent, false);
                 SearchResultViewBinding searchResultViewBinding = DataBindingUtil.bind(view);
-                searchResultViewModel = ViewModelProviders.of(mainActivity).get(SearchResultViewModel.class);
+                searchResultViewModel = new SearchResultViewModel(mainActivity.getApplication());
                 assert searchResultViewBinding != null;
                 searchResultViewModel.setSearchResultViewBinding(searchResultViewBinding);
                 searchResultViewModel.init();
@@ -150,11 +150,11 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                 homeTab(view, tab, savedInstanceState);
                 break;
             case 4:
-                if (savedInstanceState == null) {
-                    String searchQuery = tab.getParameters().getString(SELECTED_ICON_URL);
-                    searchResultViewModel.getSearchResultFromApi(searchQuery);
-                    searchResultViewModel.setSearch_key(searchQuery);
-                }
+
+                String searchQuery = tab.getParameters().getString(SELECTED_ICON_URL);
+                searchResultViewModel.getSearchResultFromApi(searchQuery);
+                searchResultViewModel.setSearch_key(searchQuery);
+                toolbarET.setText(searchQuery);
                 registerOnImeOptionClick((CustomEditTextRegular) view.findViewById(R.id.customSearchET));
                 break;
             default:
@@ -444,8 +444,12 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                 addTabOnIconClick(formattedUrl);
             }
         } else {
-            resetToolbar();
-            addTabOnIconClick(toolbarText);
+            if (viewType != 4) {
+                resetToolbar();
+                addTabOnIconClick(toolbarText);
+            } else {
+                searchResultViewModel.getSearchResultFromApi(toolbarText);
+            }
         }
         return true;
     }

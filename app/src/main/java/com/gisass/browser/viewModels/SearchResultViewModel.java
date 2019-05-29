@@ -71,7 +71,9 @@ public class SearchResultViewModel extends AndroidViewModel {
                 searchResultViewBinding.shimmerViewContainer.setVisibility(View.GONE);
                 googleSearchModel = response.body();
                 googleItems.addAll(googleSearchModel.getItems());
+                searchResultAdapter = new SearchResultAdapter(SearchResultViewModel.this);
                 searchResultViewBinding.ItemRV.setAdapter(searchResultAdapter);
+
             }
 
             @Override

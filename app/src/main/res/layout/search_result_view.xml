@@ -58,11 +58,11 @@
                     android:imeOptions="actionSearch"
                     android:padding="@dimen/ten_dp"
                     android:singleLine="true"
-                    android:text="@={viewModel.search_key}"
                     android:textSize="@dimen/fourteen_sp"
                     android:visibility="visible" />
 
                 <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/searchIV"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:padding="@dimen/ten_dp"
