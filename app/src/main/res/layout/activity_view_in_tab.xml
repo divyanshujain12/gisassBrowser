@@ -42,7 +42,7 @@
                     android:orientation="vertical">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="@dimen/one_hundred_fifty_five_dp"
+                        android:layout_width="@dimen/one_hundred_dp"
                         android:layout_height="@dimen/fifty_dp"
                         android:layout_gravity="center"
                         app:srcCompat="@drawable/logo" />

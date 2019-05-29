@@ -45,32 +45,34 @@
             android:src="@drawable/ic_hamburger" />
 
         <LinearLayout
+            android:id="@+id/toolbarLL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_corner"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="visible">
 
             <com.gisass.browser.customViews.CustomEditText
                 android:id="@+id/toolbarET"
                 android:layout_width="0dp"
-                android:layout_weight="8"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/five_dp"
-               android:background="@null"
-               android:padding="@dimen/ten_dp"
+                android:layout_weight="6"
+                android:background="@null"
                 android:hint="@string/search"
                 android:imeOptions="actionSearch"
-
+                android:padding="@dimen/ten_dp"
                 android:singleLine="true"
                 android:textSize="@dimen/fourteen_sp"
                 android:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="0dp"
-                android:layout_weight="2"
-                android:background="@drawable/rounded_right_blue"
+                android:id="@+id/searchIV"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_search_black_24dp"/>
+                android:background="@drawable/rounded_right_blue"
+                android:padding="@dimen/ten_dp"
+                android:src="@drawable/ic_search_black_24dp" />
         </LinearLayout>
 
     </de.mrapp.android.util.view.UnfocusableToolbar>

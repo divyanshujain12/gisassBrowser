@@ -21,7 +21,7 @@
             android:padding="@dimen/five_dp"
             android:orientation="vertical">
 
-            <com.gisass.browser.customFontViews.CustomTextviewBold
+            <com.gisass.browser.customFontViews.CustomTextviewRegular
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"

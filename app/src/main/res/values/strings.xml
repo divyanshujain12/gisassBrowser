@@ -3,7 +3,8 @@
     <string name="activity_settings">Settings</string>
     <string name="toggle_tab_switcher_menu_item">Toggle switcher</string>
     <string name="remove_tab_menu_item">Remove tab</string>
-    <string name="add_tab_menu_item">New tab</string>
+    <string name="add_tab_menu_item">New Window</string>
+    <string name="add_incognito_tab_menu_item">New Incognito Window</string>
     <string name="clear_tabs_menu_item">Clear all tabs</string>
     <string name="settings_menu_item">Settings</string>
     <string name="tab_title">Tab %1$d</string>
@@ -79,5 +80,13 @@
     <string name="http_my_business_gisass_com">http://my-business.gisass.com/</string>
     <string name="gisass_home">http://gisass.com</string>
     <string name="loading">LOADING...</string>
+    <string name="history">History</string>
+    <string name="rate_us">Rate Us</string>
+    <string name="share_browser">Share Browser</string>
+    <string name="add_bookmarks">Add Bookmarks</string>
+    <string name="show_bookmarks">Show Bookmarks</string>
+    <string name="settings">Settings</string>
+    <string name="exit">Exit</string>
+    <string name="clear_history">Clear History</string>
 
 </resources>

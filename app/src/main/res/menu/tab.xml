@@ -14,23 +14,65 @@ implied. See the License for the specific language governing permissions and lim
 License.
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/toggle_tab_switcher_menu_item"
         android:title="@string/toggle_tab_switcher_menu_item"
         app:actionLayout="@layout/tab_switcher_menu_item"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/toggle_history_menu_item"
+        android:title="@string/history"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/toggle_rate_us_item"
+        android:title="@string/rate_us"
+        app:showAsAction="never" />
+
+
+    <item
+        android:id="@+id/add_tab_menu_item"
+        android:title="@string/add_tab_menu_item"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/add_incognito_tab_menu_item"
+        android:title="@string/add_incognito_tab_menu_item"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/toggle_share_browser_item"
+        android:title="@string/share_browser"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/toggle_clear_history_item"
+        android:title="@string/clear_history"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/toggle_add_bookmarks_item"
+        android:title="@string/add_bookmarks"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/toggle_show_bookmarks_item"
+        android:title="@string/show_bookmarks"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/toggle_setting_item"
+        android:title="@string/settings"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/remove_tab_menu_item"
         android:title="@string/remove_tab_menu_item"
         app:showAsAction="never"/>
-
     <item
-        android:id="@+id/add_tab_menu_item"
-        android:title="@string/add_tab_menu_item"
-        app:showAsAction="never"/>
+        android:id="@+id/toggle_exit_item"
+        android:title="@string/exit"
+        app:showAsAction="never" />
+
+
 
 
 </menu>

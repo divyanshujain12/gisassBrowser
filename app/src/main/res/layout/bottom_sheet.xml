@@ -8,65 +8,66 @@
             type="com.gisass.browser.viewModels.ViewInTabViewModel" />
     </data>
 
-    <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/bottomSheetLL"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/bottom_tab"
-        android:orientation="horizontal"
-        android:paddingTop="@dimen/five_dp"
-        android:paddingBottom="@dimen/five_dp"
+        app:cardElevation="@dimen/five_dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:showIn="@layout/activity_view_in_tab">
+        android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="0dp"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/bottomSheetLL"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="@{(v)->viewModel.onBottomSheetClick(0,v)}"
-            
-            android:src="@drawable/ic_airplay_black_24dp" />
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/five_dp"
+            android:paddingBottom="@dimen/five_dp"
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="@{(v)->viewModel.onBottomSheetClick(1,v)}"
-            
-            android:src="@drawable/ic_book_black_24dp" />
+            tools:showIn="@layout/activity_view_in_tab">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="@{(v)->viewModel.onBottomSheetClick(2,v)}"
-            
-            android:src="@drawable/ic_filter_b_and_w_black_24dp" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="@{(v)->viewModel.onBottomSheetClick(0,v)}"
+                android:src="@drawable/ic_airplay_black_24dp" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="@{(v)->viewModel.onBottomSheetClick(3,v)}"
-            
-            android:src="@drawable/ic_account_box_black_24dp" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="@{(v)->viewModel.onBottomSheetClick(1,v)}"
+                android:src="@drawable/ic_book_black_24dp" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="@{(v)->viewModel.onBottomSheetClick(4,v)}"
-            
-            android:src="@drawable/ic_monetization_on_black_24dp" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="@{(v)->viewModel.onBottomSheetClick(2,v)}"
+                android:src="@drawable/ic_filter_b_and_w_black_24dp" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="@{(v)->viewModel.onBottomSheetClick(3,v)}"
+                android:src="@drawable/ic_account_box_black_24dp" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="@{(v)->viewModel.onBottomSheetClick(4,v)}"
+                android:src="@drawable/ic_monetization_on_black_24dp" />
 
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.cardview.widget.CardView>
 </layout>

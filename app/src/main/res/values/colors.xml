@@ -14,4 +14,6 @@
     <color name="blue">#0000FF</color>
     <color name="snippet_color">#3F3F3F</color>
     <color name="link_color">#008000</color>
+    <color name="bottom_sheet_icon">#808080</color>
+    <color name="border_color">#55808080</color>
 </resources>

@@ -18,6 +18,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -58,6 +59,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
     private TabSwitcher tabSwitcher;
     private ProgressBar contentLoadingPB;
     private CustomEditTextRegular toolbarET;
+    private LinearLayout toolbarLL;
     private ConstraintLayout typeOne, typeTwo;
     private FrameLayout webViewContainer;
     private Menu menu;
@@ -153,9 +155,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                     searchResultViewModel.getSearchResultFromApi(searchQuery);
                     searchResultViewModel.setSearch_key(searchQuery);
                 }
-
                 registerOnImeOptionClick((CustomEditTextRegular) view.findViewById(R.id.customSearchET));
-//                hideAllItemsFromToolbar();
                 break;
             default:
                 defaultTab();
@@ -169,7 +169,9 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         menu = toolbar.getMenu();
         toolbarET = view.findViewById(R.id.toolbarET);
+        toolbarLL = view.findViewById(R.id.toolbarLL);
         showDrawerIV = view.findViewById(R.id.showDrawer);
+        findViewById(R.id.searchIV).setOnClickListener(new CustomViewClick());
         registerOnImeOptionClick(toolbarET);
     }
 
@@ -189,13 +191,9 @@ public class Decorator extends StatefulTabSwitcherDecorator {
 
     private void defaultTab() {
         showDrawerIV.setVisibility(View.GONE);
-        toolbarET.setVisibility(View.VISIBLE);
+        toolbarLL.setVisibility(View.VISIBLE);
     }
 
-    private void hideAllItemsFromToolbar() {
-        showDrawerIV.setVisibility(View.GONE);
-        toolbarET.setVisibility(View.GONE);
-    }
 
     private void initViewsForTabTypeOne(@NonNull View view, @Nullable Bundle savedInstanceState) {
         typeOne = view.findViewById(R.id.typeOne);
@@ -301,7 +299,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
     public void showTypeTwo(boolean show) {
         typeOne.setVisibility(show ? View.GONE : View.VISIBLE);
         typeTwo.setVisibility(show ? View.VISIBLE : View.GONE);
-        toolbarET.setVisibility(show ? View.VISIBLE : View.GONE);
+        toolbarLL.setVisibility(show ? View.VISIBLE : View.GONE);
         showDrawerIV.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
@@ -350,6 +348,9 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                     break;
                 case R.id.showDrawer:
                     drawerLayout.openDrawer(Gravity.LEFT, true);
+                    break;
+                case R.id.searchIV:
+                    onToolbarETClick();
                     break;
             }
 
@@ -410,7 +411,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 switch (v.getId()) {
                     case R.id.toolbarET:
-                        toolbarETText();
+                        onToolbarETClick();
                         break;
                     case R.id.customSearchET:
                         String customSearchText = v.getText().toString();
@@ -423,7 +424,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
     }
 
 
-    private boolean toolbarETText() {
+    private boolean onToolbarETClick() {
         String toolbarText = Objects.requireNonNull(toolbarET.getText()).toString();
         if (toolbarText.contains("http://") || toolbarText.contains("https://")) {
             String formattedUrl = Utils.getInstance().getFormattedUrlString(toolbarET.getText().toString().replaceAll(" ", ""));
