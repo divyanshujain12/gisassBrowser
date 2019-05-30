@@ -6,12 +6,14 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.gisass.browser.ApiUtils.GetDataService;
 import com.gisass.browser.ApiUtils.RetrofitClientInstance;
+import com.gisass.browser.R;
 import com.gisass.browser.adapters.SearchResultAdapter;
 import com.gisass.browser.customViews.CustomDialog;
-import com.gisass.browser.databinding.SearchResultViewBinding;
 import com.gisass.browser.globalClass.MyApp;
 import com.gisass.browser.models.GoogleSearchModel;
 import com.gisass.browser.models.Item;
@@ -39,16 +41,21 @@ public class SearchResultViewModel extends AndroidViewModel {
     private static final String GOOGLE_CX = "005503866809826999211:eqkqu0bguzo";
     private String search_key = "";
     private CustomDialog customDialog;
-    private SearchResultViewBinding searchResultViewBinding;
+    private View view;
+    private ShimmerFrameLayout shimmerViewContainer;
+    private RecyclerView ItemRV;
 
     public SearchResultViewModel(@NonNull Application application) {
         super(application);
     }
 
-    public void init() {
-        searchResultAdapter = new SearchResultAdapter(this);
+    public void init(View view) {
+        this.view = view;
+        shimmerViewContainer = view.findViewById(R.id.shimmer_view_container);
+        ItemRV = view.findViewById(R.id.ItemRV);
         Retrofit retrofit = RetrofitClientInstance.getRetrofitInstance("https://www.googleapis.com");
         getDataService = retrofit.create(GetDataService.class);
+        searchResultAdapter = new SearchResultAdapter(SearchResultViewModel.this);
         customDialog = new CustomDialog(((MyApp) getApplication()).getCurrentActivity());
 
         setAdapterToRecyclerView();
@@ -61,18 +68,18 @@ public class SearchResultViewModel extends AndroidViewModel {
 
     public void getSearchResultFromApi(String searchQuery) {
         googleItems = new ArrayList<>();
-        searchResultViewBinding.shimmerViewContainer.setVisibility(View.VISIBLE);
-        searchResultViewBinding.shimmerViewContainer.startShimmerAnimation();
+        shimmerViewContainer.setVisibility(View.VISIBLE);
+        shimmerViewContainer.startShimmerAnimation();
 
         getDataService.getSearchResult(GOOGLE_KEY, GOOGLE_CX, searchQuery).enqueue(new Callback<GoogleSearchModel>() {
             @Override
             public void onResponse(@NotNull Call<GoogleSearchModel> call, @NotNull Response<GoogleSearchModel> response) {
-                searchResultViewBinding.shimmerViewContainer.stopShimmerAnimation();
-                searchResultViewBinding.shimmerViewContainer.setVisibility(View.GONE);
+                shimmerViewContainer.stopShimmerAnimation();
+                shimmerViewContainer.setVisibility(View.GONE);
                 googleSearchModel = response.body();
                 googleItems.addAll(googleSearchModel.getItems());
-                searchResultAdapter = new SearchResultAdapter(SearchResultViewModel.this);
-                searchResultViewBinding.ItemRV.setAdapter(searchResultAdapter);
+
+                searchResultAdapter.notifyDataSetChanged();
 
             }
 
@@ -94,19 +101,15 @@ public class SearchResultViewModel extends AndroidViewModel {
 
     private void setAdapterToRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(((MyApp) getApplication()).getCurrentActivity());
-        searchResultViewBinding.ItemRV.setLayoutManager(linearLayoutManager);
-        searchResultViewBinding.ItemRV.setAdapter(searchResultAdapter);
+        ItemRV.setLayoutManager(linearLayoutManager);
+        ItemRV.setAdapter(searchResultAdapter);
     }
 
     public void setUrl(Action1<String> url) {
         searchResultAdapter.setUrl(url);
     }
 
-    public void setSearchResultViewBinding(SearchResultViewBinding searchResultViewBinding) {
-        this.searchResultViewBinding = searchResultViewBinding;
-        this.searchResultViewBinding.shimmerViewContainer.setVisibility(View.GONE);
 
-    }
 }
 
 

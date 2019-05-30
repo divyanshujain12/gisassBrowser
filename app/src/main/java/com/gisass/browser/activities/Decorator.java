@@ -36,7 +36,6 @@ import com.gisass.browser.customFontViews.CustomEditTextRegular;
 import com.gisass.browser.databinding.ActivityEducationBinding;
 import com.gisass.browser.databinding.ActivityJobBinding;
 import com.gisass.browser.databinding.ActivityViewInTabBinding;
-import com.gisass.browser.databinding.SearchResultViewBinding;
 import com.gisass.browser.utils.KeyboardUtils;
 import com.gisass.browser.utils.TabUtils;
 import com.gisass.browser.utils.Utils;
@@ -119,13 +118,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                 break;
             case 4:
                 view = inflater.inflate(R.layout.search_result_view, parent, false);
-                SearchResultViewBinding searchResultViewBinding = DataBindingUtil.bind(view);
-                searchResultViewModel = new SearchResultViewModel(mainActivity.getApplication());
-                assert searchResultViewBinding != null;
-                searchResultViewModel.setSearchResultViewBinding(searchResultViewBinding);
-                searchResultViewModel.init();
-                searchResultViewBinding.setViewModel(searchResultViewModel);
-                searchResultViewModel.setUrl(action1);
+
 
                 break;
         }
@@ -151,10 +144,14 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                 break;
             case 4:
 
+                SearchResultViewModel searchResultViewModel = new SearchResultViewModel(mainActivity.getApplication());
+                searchResultViewModel.init(view);
+                searchResultViewModel.setUrl(action1);
                 String searchQuery = tab.getParameters().getString(SELECTED_ICON_URL);
                 searchResultViewModel.getSearchResultFromApi(searchQuery);
                 searchResultViewModel.setSearch_key(searchQuery);
                 toolbarET.setText(searchQuery);
+
                 registerOnImeOptionClick((CustomEditTextRegular) view.findViewById(R.id.customSearchET));
                 break;
             default:
@@ -171,7 +168,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         toolbarET = view.findViewById(R.id.toolbarET);
         toolbarLL = view.findViewById(R.id.toolbarLL);
         showDrawerIV = view.findViewById(R.id.showDrawer);
-        findViewById(R.id.searchIV).setOnClickListener(new CustomViewClick());
+        view.findViewById(R.id.searchIV).setOnClickListener(new CustomViewClick());
         registerOnImeOptionClick(toolbarET);
     }
 
