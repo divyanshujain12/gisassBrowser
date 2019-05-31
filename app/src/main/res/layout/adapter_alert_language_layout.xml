@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="language"
+            type="String" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.gisass.browser.customFontViews.CustomTextviewRegular
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/fifty_dp"
+            android:layout_margin="@dimen/ten_dp"
+
+            android:background="@drawable/rounded_corner"
+            android:gravity="center"
+            android:text="@{language}"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/sixteen_sp" />
+    </LinearLayout>
+</layout>

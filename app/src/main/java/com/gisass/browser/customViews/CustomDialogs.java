@@ -2,22 +2,23 @@ package com.gisass.browser.customViews;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupMenu;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.fenchtose.tooltip.Tooltip;
 import com.fenchtose.tooltip.TooltipAnimation;
 import com.gisass.browser.R;
-
-import me.piruin.quickaction.ActionItem;
-import me.piruin.quickaction.QuickAction;
+import com.gisass.browser.adapters.AlertLanguageAdapter;
 
 public class CustomDialogs {
     private static final CustomDialogs ourInstance = new CustomDialogs();
@@ -30,63 +31,6 @@ public class CustomDialogs {
     private static Tooltip tooltip = null;
 
     private CustomDialogs() {
-    }
-
-    public AlertDialog getLoadingDialog(Context context, final MutableLiveData<String> url) {
-
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.advierisement_popup_layout, null);
-        final AlertDialog alertDialog = builder.create();
-        return alertDialog;
-    }
-
-    public MutableLiveData<Integer> getAdPopup(Context context, View anchorView, int menu) {
-
-        final MutableLiveData<Integer> liveData = new MutableLiveData<>();
-
-        PopupMenu popupMenu = new PopupMenu(context, anchorView);
-        popupMenu.getMenuInflater().inflate(menu, popupMenu.getMenu());
-
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                liveData.postValue(item.getItemId());
-                return false;
-            }
-        });
-        popupMenu.show();
-        return liveData;
-    }
-
-    public MutableLiveData<Integer> getQuickAction(Context context, View anchorView) {
-
-        final MutableLiveData<Integer> liveData = new MutableLiveData<>();
-
-        ActionItem buzzmateAdItem = new ActionItem(1, context.getString(R.string.buzzmate_ads));
-        ActionItem gisassAdItem = new ActionItem(2, context.getString(R.string.gisass_advertisement));
-        ActionItem browserAdItem = new ActionItem(3, context.getString(R.string.browser_ads));
-
-
-        QuickAction quickAction = new QuickAction(context, QuickAction.VERTICAL);
-
-        quickAction.addActionItem(buzzmateAdItem, gisassAdItem, browserAdItem);
-        quickAction.setColor(Color.WHITE);
-        quickAction.setTextColor(Color.BLACK);
-        quickAction.setEnabledDivider(true);
-        quickAction.setDividerColor(Color.BLACK);
-
-        quickAction.setOnActionItemClickListener(new QuickAction.OnActionItemClickListener() {
-            @Override
-            public void onItemClick(ActionItem item) {
-                liveData.postValue(item.getActionId());
-            }
-        });
-
-        quickAction.show(anchorView);
-
-        return liveData;
     }
 
     public MutableLiveData<Integer> getAdvertisementTooltip(Context context, View anchorView) {
@@ -147,4 +91,31 @@ public class CustomDialogs {
         }).withPadding(20).show();
     }
 
+
+    public void showLanguageDialog(Context context) {
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View view = layoutInflater.inflate(R.layout.alert_language_layout, null);
+        setupFullWidthDialog(alertDialog);
+        alertDialog.setView(view);
+        AlertLanguageAdapter alertLanguageAdapter = new AlertLanguageAdapter(context, alertDialog);
+        RecyclerView alertLanguagesRV = view.findViewById(R.id.alertLanguagesRV);
+        alertLanguagesRV.setLayoutManager(new GridLayoutManager(context, 2));
+        alertLanguagesRV.setAdapter(alertLanguageAdapter);
+        alertDialog.show();
+    }
+
+
+    private static void setupFullWidthDialog(AlertDialog alertDialog) {
+        alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Window window = alertDialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.gravity = Gravity.CENTER;
+        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(wlp);
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        alertDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
+    }
 }

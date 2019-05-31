@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gisass.browser.R;
+import com.gisass.browser.customViews.CustomDialogs;
 import com.gisass.browser.databinding.ActivityGridRecyclerViewBinding;
 import com.gisass.browser.databinding.ActivityGridWithBackgroundBinding;
 import com.gisass.browser.databinding.HeadingLayoutBinding;
@@ -95,6 +96,12 @@ public class ViewInTabAdapter extends RecyclerView.Adapter<ViewInTabAdapter.View
                 break;
             case 5:
                 headingLayoutBinding.setTitle((String) viewInTabViewModel.getItem(position));
+                headingLayoutBinding.changeLanguageTV.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CustomDialogs.getInstance().showLanguageDialog(v.getContext());
+                    }
+                });
                 headingLayoutBinding.executePendingBindings();
                 break;
         }

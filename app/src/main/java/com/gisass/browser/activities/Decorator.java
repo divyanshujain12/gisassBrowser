@@ -33,6 +33,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.gisass.browser.R;
 import com.gisass.browser.animations.ResizeWidthAnimation;
 import com.gisass.browser.customFontViews.CustomEditTextRegular;
+import com.gisass.browser.customViews.CustomDialogs;
 import com.gisass.browser.databinding.ActivityEducationBinding;
 import com.gisass.browser.databinding.ActivityJobBinding;
 import com.gisass.browser.databinding.ActivityViewInTabBinding;
@@ -204,7 +205,6 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         contentLoadingPB.setMax(100);
         view.findViewById(R.id.externalET).setOnClickListener(new CustomViewClick());
 
-
         showDrawerIV.setOnClickListener(new CustomViewClick());
     }
 
@@ -340,6 +340,7 @@ public class Decorator extends StatefulTabSwitcherDecorator {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.externalET:
+
                     showTypeTwo(true);
                     toolbarET.requestFocus();
                     break;
@@ -348,6 +349,10 @@ public class Decorator extends StatefulTabSwitcherDecorator {
                     break;
                 case R.id.searchIV:
                     onToolbarETClick();
+                    break;
+
+                case R.id.changeLanguageTV:
+                    CustomDialogs.getInstance().showLanguageDialog(mainActivity);
                     break;
             }
 
