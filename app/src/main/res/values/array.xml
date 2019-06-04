@@ -29,7 +29,6 @@
         <item>http://gisass.com/donation</item>
     </string-array>
 
-    <string-array name="sliding_drawer_items"></string-array>
 
     <string-array name="languagesArray">
         <item>हिन्दी</item>
@@ -40,6 +39,26 @@
         <item>ગુજરાતી</item>
         <item>ಕನ್ನಡ</item>
         <item>తెలుగు</item>
+    </string-array>
+
+    <string-array name="user_options_array">
+        <item>Chatting</item>
+        <item>Video Call</item>
+        <item>Device Sharing</item>
+        <item>Audio Call</item>
+        <item>New Users</item>
+        <item>Total Users</item>
+        <item>Total Rating</item>
+        <item>Weekly Growth</item>
+    </string-array>
+
+    <string-array name="spoints_array">
+        <item>Total Search</item>
+        <item>Total Points</item>
+        <item>Total Income</item>
+        <item>Expiated</item>
+        <item>Available Recharge</item>
+        <item>Bank Transfer</item>
     </string-array>
 
 </resources>

@@ -13,12 +13,15 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fenchtose.tooltip.Tooltip;
 import com.fenchtose.tooltip.TooltipAnimation;
 import com.gisass.browser.R;
 import com.gisass.browser.adapters.AlertLanguageAdapter;
+import com.gisass.browser.adapters.CustomAlertDialogAdapter;
+import com.gisass.browser.utils.RecyclerTouchListener;
 
 public class CustomDialogs {
     private static final CustomDialogs ourInstance = new CustomDialogs();
@@ -70,6 +73,32 @@ public class CustomDialogs {
             onDismissTooltip();
         }
         return url;
+    }
+
+    public void showCustomPopup(Context context, String[] items, View anchorView) {
+        if (tooltip == null) {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            View view = inflater.inflate(R.layout.custom_alert_view, null);
+            tooltip = getTooltip(context, anchorView, view);
+            RecyclerView customAlertRV = view.findViewById(R.id.customAlertRV);
+            CustomAlertDialogAdapter customAlertDialogAdapter = new CustomAlertDialogAdapter(items);
+            customAlertRV.setLayoutManager(new LinearLayoutManager(context));
+            customAlertRV.setAdapter(customAlertDialogAdapter);
+            customAlertRV.addOnItemTouchListener(new RecyclerTouchListener(context, customAlertRV, new RecyclerTouchListener.ClickListener() {
+                @Override
+                public void onClick(View view, int position) {
+                    onDismissTooltip();
+                }
+
+                @Override
+                public void onLongClick(View view, int position) {
+
+                }
+            }));
+
+        } else {
+            onDismissTooltip();
+        }
     }
 
     private void onDismissTooltip() {
